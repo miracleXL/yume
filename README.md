@@ -1,39 +1,35 @@
-# yume README
+# Galgame汉化助手
 
-This is the README for your extension "yume". After writing up a brief description, we recommend including the following sections.
+未完成，主要功能开发中
 
-## Features
+## 目前主要功能及使用方法
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+* 字典工具
+    允许设置专有名词，搜索时优先查找自定义名词表
+    使用时先*选中需要翻译的内容*，**快捷键**(Ctrl + Alt + W)，或者使用**右键**字典工具
+* 百度机翻
+    使用时先*选中需要翻译的内容*，**快捷键**(Ctrl + Alt + S)，或者使用**右键**百度翻译
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+计划变更和详细更新记录请查阅**更改日志**
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+使用了以下模块，一般情况下安装插件时应该会自动安装
+
+> * request
+> * cheerio
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+还没有写好
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+全是问题
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+还差得远呢
 
 ### 1.0.0
 

@@ -1,9 +1,62 @@
 # Change Log
 
-All notable changes to the "yume" extension will be documented in this file.
-
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## 预定下次更新内容
 
-- Initial release
+初始化操作，将项目设置内容保存在打开的工作区
+
+## 待更新
+
+1. 项目配置
+    * 为每个项目启用不同的设置项
+    * 当前项目需要设置项（配置文件保存在项目隐藏目录中）
+        * 剧本提取正则表达式
+        * 角色设定
+2. 当前项目总览
+    * 进度统计
+    * 人员工作分配
+    * 角色设定速览
+3. 快速查询
+    * 该插件使用文档
+    * 当前项目宏指令集
+    * 当前游戏引擎解封包步骤
+    * 当前游戏引擎调试技巧
+4. 词典工具
+    * 自定义名词表
+        * 角色用词习惯
+        * 专有名词
+    * 调用词典查询
+        * 日语词典
+            * mecab分词
+        * 汉语词典
+            * 近义词
+            * 反义词
+    * 划词翻译
+        * 弹窗或终端输出
+    * 快捷键绑定
+5. 剧本抽取工具
+    * 自定义提取正则表达式
+6. 一键上传工具
+    * Git
+    * 坚果云
+
+## ver 0.2.0
+
+将项目开发语言从JavaScript改为TypeScript
+
+## ver 0.1.0  
+
+实现百度机翻，快捷键为（Ctrl + Alt + S），单词查询快捷键改为（Ctrl + Alt + W）
+
+## 使用面向对象方法学重构  
+
+重新设计了模块结构，并使用类的方式重新编写。删去不稳定的划词翻译
+
+## ver 0.0.2  
+
+实现划词翻译，效率及缓存待优化，将快捷键更改为（Ctrl + Shift + F）
+
+## Ver 0.0.1
+
+实现了最基本的字典查询，选中待查文字后，通过右键或快捷键（Ctrl + Shift + T）调用。
