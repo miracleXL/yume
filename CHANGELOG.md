@@ -4,8 +4,6 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 预定下次更新内容
 
-初始化操作，将项目设置内容保存在打开的工作区
-
 ## 待更新
 
 1. 项目配置
@@ -40,6 +38,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 6. 一键上传工具
     * Git
     * 坚果云
+
+## ver 0.2.1
+
+分离全局设置项至vscode插件设置页面。添加初始化操作，将项目设置内容保存在打开的工作区
 
 ## ver 0.2.0
 

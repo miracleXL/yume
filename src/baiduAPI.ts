@@ -40,27 +40,38 @@ export class Baidu implements BaiduFanyi{
             };
             request.get(this.api.api,{
                 gzip: true,
-                headers: {
-                    Referer: this.api.api,
-                    "User-Agent" : this.userAgent
+                headers:{
+                    'Content-Type':'application/json',
+                    'User-Agent':this.userAgent
                 },
                 qs: data
-            },(err:any, res:any, body:any)=>{
+            },(err:Error, res:any, body:any)=>{
                 if(err){
                     reject(err);
+                    return;
                 }
-                let sentences = JSON.parse(body);
-                if (sentences.trans_result) {
-                    sentences = sentences.trans_result;
-                    let result = "";
-                    for (let i in sentences) {
-                        result += sentences[i].dst;
+                if(res.headers['content-type'] !== "application/json"){
+                    console.log(res);
+                }
+                try{
+                    let sentences = JSON.parse(body);
+                    if (sentences.trans_result) {
+                        let result = "";
+                        for (let i of sentences.trans_result) {
+                            result += i.dst;
+                        }
+                        console.log(result);
+                        resolve(result);
+                    } else {
+                        reject(
+                            `Error. Raw result: ${body}`
+                        );
                     }
-                    resolve(result);
-                } else {
-                    reject(
-                        `Error. Raw result: ${body}`
-                    );
+                }
+                catch(e){
+                    console.log("JSON解析失败！");
+                    console.log(body);
+                    reject(e);
                 }
             });
         });

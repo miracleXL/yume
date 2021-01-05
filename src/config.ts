@@ -1,48 +1,84 @@
 /// <reference path = "yume.d.ts" />
 /* eslint-disable @typescript-eslint/naming-convention */
 "use strict";
+import fs = require("fs");
+import path = require("path");
+import vscode = require("vscode");
 
 export class Config{
 
-    initialled: boolean;
+    extensionConf: vscode.WorkspaceConfiguration;
+    userAgent: string;
     baiduAPI: {
         api:string,
         appId:string,
         appKey:string
     };
-    mydictPath: string;
-    hjUrl: string;
+    rootPath: string | null;
+    mydictPath : string | null;
+    config:{
+        [index:string]: object | string,
+        hjUrl: string,
 
-    userAgent: string;
-    hjCookie: string;
-    hjHeader: Header;
+        hjHeader: Header,
+    };
 
     constructor(){
-        this.userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36';;
-        this.hjCookie = 'HJ_UID=0f406091-be97-6b64-f1fc-f7b2470883e9; HJ_CST=1; HJ_CSST_3=1;TRACKSITEMAP=3%2C; HJ_SID=393c85c7-abac-f408-6a32-a1f125d7e8c6; _REF=; HJ_SSID_3=4a460f19-c0ae-12a7-8e86-6e360f69ec9b; _SREF_3=; HJ_CMATCH=1';
-        this.hjHeader = {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36',
-                "Cookie": this.hjCookie
-            }
-        };
-    
-        // 本地字典路径
-        this.mydictPath = __dirname + "\\dict\\mydict.json";         //自定义名词表
-        this.hjUrl = 'https://dict.hjenglish.com/jp/jc/';
-        // 词典来源：https://github.com/pwxcoo/chinese-xinhua
-        // const idiomUrl = __dirname+"\\dict\\idiom.json";           //成语词典
-        // const xiehouyuUrl = __dirname+"\\dict\\xiehouyu.json";     //歇后语
-        // const ciUrl = __dirname+"\\dict\\ci.json";                 //词典
-        // const wordUrl = __dirname+"\\dict\\word.json";             //字典
-    
-        this.initialled = false;
-    
+        this.extensionConf = vscode.workspace.getConfiguration("yume");
+        this.rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : null;
         this.baiduAPI = {
-            "api":'http://api.fanyi.baidu.com/api/trans/vip/translate',
-            "appId":'20200627000507662',
-            "appKey":'MnwbdXNVP7WK837esfFU',
+            "api": this.extensionConf.get("百度API.api") as string,
+            "appId": this.extensionConf.get("百度API.appId") as string,
+            "appKey": this.extensionConf.get("百度API.appKey") as string,
         };
+        this.userAgent = this.extensionConf.get("userAgent") as string;
+
+        this.mydictPath = this.rootPath ? path.join(this.rootPath, ".vscode/yume-config.json") : null;         //自定义名词表
+        // 词典来源：https://github.com/pwxcoo/chinese-xinhua
+        // idiomUrl : __dirname+"\\dict\\idiom.json",           //成语词典
+        // xiehouyuUrl : __dirname+"\\dict\\xiehouyu.json",     //歇后语
+        // ciUrl : __dirname+"\\dict\\ci.json",                 //词典
+        // wordUrl : __dirname+"\\dict\\word.json",             //字典
+
+        this.config = {
+            hjHeader : {
+                headers: {
+                    'User-Agent': this.extensionConf.get("userAgent") as string,
+                    "Cookie": 'HJ_UID=0f406091-be97-6b64-f1fc-f7b2470883e9; HJ_CST=1; HJ_CSST_3=1;TRACKSITEMAP=3%2C; HJ_SID=393c85c7-abac-f408-6a32-a1f125d7e8c6; _REF=; HJ_SSID_3=4a460f19-c0ae-12a7-8e86-6e360f69ec9b; _SREF_3=; HJ_CMATCH=1'
+                }
+            },
+
+            hjUrl : 'https://dict.hjenglish.com/jp/jc/',
+        };
+    }
+
+    load(path:string):boolean{
+        try{
+            this.config = require(path);
+        }
+        catch(e){
+            console.error(e);
+            return false;
+        }
+        if(this.config.hjHeader.headers["User-Agent"] !== this.extensionConf.get("userAgent")){
+            this.config.hjHeader.headers["User-Agent"] = this.extensionConf.get("userAgent") as string;
+            this.save(path);
+        }
+        return true;
+    }
+
+    save(path:string):boolean{
+        try{
+            fs.writeFileSync(path, JSON.stringify(this.config), {
+                encoding: "utf-8",
+                flag: "w"
+            });
+        }
+        catch(e){
+            console.error(e);
+            return false;
+        }
+        return true;
     }
 
     setBaiduAPI(api:string, appId:string, appKey:string):boolean{
@@ -50,5 +86,9 @@ export class Config{
         this.baiduAPI.appId = appId;
         this.baiduAPI.appKey = appKey;
         return true;
+    }
+
+    getBaiduAPI(){
+        return this.baiduAPI;
     }
 }

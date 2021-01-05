@@ -2,6 +2,8 @@
 // Import the module and reference it with the alias vscode in your code below
 /// <reference path = "yume.d.ts" />
 import * as vscode from 'vscode';
+import fs = require("fs");
+import path = require("path");
 import {Config} from "./config";
 import {Baidu} from "./baiduAPI";
 import {JPdict, Mydict} from "./dictionary";
@@ -18,24 +20,45 @@ class ControlCenter{
 	constructor(){
 		this.config = new Config();
 		this.channel = vscode.window.createOutputChannel("Yume");
-		this.baidu = new Baidu(this.config.baiduAPI);
+		this.baidu = new Baidu(this.config.getBaiduAPI());
 		this._jpdict = new JPdict();
 		this._mydict = new Mydict();
-		if(vscode.workspace.workspaceFolders && this.config.initialled){
-			this.initialled = true;
+		this.initialled = this.init();
+	}
+
+	init():boolean{
+		try{
+			if(this.config.rootPath){
+				if(fs.existsSync(path.join(this.config.rootPath, ".vscode/yume-config.json"))){
+					this.config.load(path.join(this.config.rootPath, ".vscode/yume-config.json"));
+				}
+				else{
+					this.config.save(path.join(this.config.rootPath, ".vscode/yume-config.json"));
+				}
+			}
 		}
-		else{
-			this.initialled = false;
+		catch(e){
+			this.error(e);
+			return false;
 		}
+		return true;
+	}
+
+	log(info:any):void{
+		console.log(info);
+	}
+
+	error(e:any):void{
+		console.error(e);
 	}
 
 	translate(){
 		this.baidu.search(this.selectedText()).then((res: string) => {
 			this.channel.appendLine(res);
 			this.channel.show();
-		}).catch((e: Error) => {
+		}).catch((e) => {
 			vscode.window.showErrorMessage("查询失败！请检查错误日志！");
-			console.error(e);
+			this.error(e);
 		});
 	}
 
@@ -43,9 +66,9 @@ class ControlCenter{
 		this._jpdict.search(this.selectedText()).then((res : string|JPdata)=>{
 			this.channel.appendLine(res as string);
 			this.channel.show();
-		}).catch((e : Error)=>{
+		}).catch((e)=>{
 			vscode.window.showErrorMessage("查询失败！请检查错误日志");
-			console.error(e);
+			this.error(e);
 		});
 	}
 
@@ -56,7 +79,7 @@ class ControlCenter{
 		}
 		catch(e){
 			vscode.window.showErrorMessage("未知错误！");
-			console.error(e);
+			this.error(e);
 		}
 	}
 
@@ -64,9 +87,9 @@ class ControlCenter{
 	// 	if(this.initialled){
 	// 		this._mydict.add(this.selectedText()).then((res : string)=>{
 	// 		this.channel.appendLine(res);
-	// 		}).catch((e: Error)=>{
+	// 		}).catch((e)=>{
 	// 			vscode.window.showErrorMessage("未知错误！");
-	// 			console.error(e);
+	// 			this.error(e);
 	// 		});
 	// 	}
 	// 	else{
