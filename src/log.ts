@@ -9,7 +9,7 @@ class Log{
 
     print(info:any){
         this.channel.appendLine(info);
-        this.channel.show();
+        this.channel.show(true);
     }
 
     log(info:any){

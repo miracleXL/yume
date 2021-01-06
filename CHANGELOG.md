@@ -4,6 +4,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 预定下次更新内容
 
+增加汉语词典查询
+
 ## 待更新
 
 1. 项目配置
@@ -38,6 +40,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 6. 一键上传工具
     * Git
     * 坚果云
+
+## ver 0.2.2
+
+完善自定义词典功能，可划词翻译或右键查询，查询日语词典也会优先搜索自定义词典。
 
 ## ver 0.2.1
 

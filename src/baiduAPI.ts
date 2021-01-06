@@ -3,6 +3,7 @@
 "use strict";
 import crypto = require("crypto");
 import request = require("request");
+import {log} from "./log";
 
 export class Baidu implements BaiduFanyi{
 
@@ -51,7 +52,7 @@ export class Baidu implements BaiduFanyi{
                     return;
                 }
                 if(res.headers['content-type'] !== "application/json"){
-                    console.log(res);
+                    log.error(res);
                 }
                 try{
                     let sentences = JSON.parse(body);
@@ -60,7 +61,6 @@ export class Baidu implements BaiduFanyi{
                         for (let i of sentences.trans_result) {
                             result += i.dst;
                         }
-                        console.log(result);
                         resolve(result);
                     } else {
                         reject(
@@ -69,8 +69,7 @@ export class Baidu implements BaiduFanyi{
                     }
                 }
                 catch(e){
-                    console.log("JSON解析失败！");
-                    console.log(body);
+                    log.error(`JSON解析失败！\n${body}`);
                     reject(e);
                 }
             });

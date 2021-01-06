@@ -90,7 +90,7 @@ export class JPdict implements Dictionary{
         for(let data of jsonData["detail"]){
             msg += "  " + data + "  \n";
         }
-        // log.log(msg);
+        // log.log(JSON.stringify(jsonData));
         return msg;
     }
 }
@@ -118,7 +118,7 @@ export class Mydict{
         if(this.dict[text]){
             return this.dict[text];
         }
-        return "查找失败！请确认是否已添加进名词表";
+        return "";
     }
 
     save():Promise<unknown>{

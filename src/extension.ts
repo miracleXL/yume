@@ -26,6 +26,20 @@ class ControlCenter{
 		else{
 			this._mydict = new Mydict();
 		}
+		let yume = this;
+        vscode.languages.registerHoverProvider({scheme:"file"},{
+            provideHover(document, position, token){
+				let jp = yume.selectedText() || document.getText(document.getWordRangeAtPosition(position));
+				if(jp === ""){
+					return;
+				}
+				let res:string = yume._mydict.search(jp);
+				if(res === ""){
+					return;
+				}
+                return new vscode.Hover(res);
+            }
+        });
 	}
 
 	init():boolean{
@@ -59,23 +73,35 @@ class ControlCenter{
 		});
 	}
 
-	jpdict() {
+	jpdict():boolean{
+		if(this.searchMydict()){
+			return true;
+		}
 		this._jpdict.search(this.selectedText()).then((res : string|JPdata)=>{
 			log.print(res as string);
+			return true;
 		}).catch((e)=>{
 			vscode.window.showErrorMessage("查询失败！请检查错误日志");
 			log.error(e);
+			return false;
 		});
+		return false;
 	}
 
-	searchMydict():void{
+	searchMydict():boolean{
 		try{
-			log.print(this._mydict.search(this.selectedText()));
+			let res:string = this._mydict.search(this.selectedText());
+			if(res === ""){
+				return false;
+			}
+			log.print(res);
+			return true;
 		}
 		catch(e){
 			vscode.window.showErrorMessage("未知错误！");
 			log.error(e);
 		}
+		return false;
 	}
 
 	addToMydict():void{

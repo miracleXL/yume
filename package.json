@@ -57,10 +57,6 @@
 			{
 				"command": "yume.translate",
 				"title": "百度翻译"
-			},
-			{
-				"command": "yume.load",
-				"title": "加载配置"
 			}
 		],
 		"keybindings": [
@@ -82,10 +78,6 @@
 		],
 		"menus": {
 			"editor/context": [
-				{
-					"command": "yume.load",
-					"group": "gta@0"
-				},
 				{
 					"when": "editorHasSelection",
 					"command": "yume.jpdict",
