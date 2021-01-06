@@ -26,12 +26,6 @@ declare interface Dictionary{
     search(text:string, convert?:boolean): Promise<string|JPdata>;
 }
 
-declare interface Mydict{
-    cache:{
-        [index:string]: string
-    }
-}
-
 declare interface Header{
     [index:string]: {
         [index:string]:string

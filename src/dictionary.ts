@@ -2,7 +2,9 @@
 /// <reference path = "yume.d.ts" />
 "use strict";
 import fs = require("fs");
+import vscode = require("vscode");
 import request = require("request");
+import {log} from "./log";
 
 export class JPdict implements Dictionary{
 
@@ -88,41 +90,84 @@ export class JPdict implements Dictionary{
         for(let data of jsonData["detail"]){
             msg += "  " + data + "  \n";
         }
-        // console.log(msg);
+        // log.log(msg);
         return msg;
     }
 }
 
-export class Mydict implements Mydict{
+export class Mydict{
 
-    mydict:{[index:string]:string};
-    mydictPath:string;
+    dict:{[index:string]:string};
+    mydictPath: vscode.Uri | null;
 
-    constructor(path?:string){
-        this.mydictPath = path ? path : __dirname + "\\dict\\mydict.json";
-        this.mydict = require("./dict/mydict.json");
+    constructor(rootPath?:vscode.Uri | null){
+        if(rootPath === undefined || rootPath === null){
+            this.dict = {};
+            this.mydictPath = null;
+            return;
+        }
+        this.mydictPath = vscode.Uri.joinPath(rootPath, ".vscode/mydict.json");
+        this.dict = {};
+        this.load();
     }
     
-    search(text:string){
+    search(text:string):string{
         if(text === ""){
             return "";
         }
-        if(this.mydict[text]){
-            return this.mydict[text];
+        if(this.dict[text]){
+            return this.dict[text];
         }
         return "查找失败！请确认是否已添加进名词表";
     }
 
-    async add(jp:string, zh:string){
-        this.mydict[jp] = zh;
-        return new Promise((resolve, reject) =>{
-            try{
-                fs.writeFileSync(this.mydictPath, this.mydict);
+    save():Promise<unknown>{
+        return new Promise((resolve, reject)=>{
+            if(this.mydictPath === null || JSON.stringify(this.dict) === "{}"){
+                return;
             }
-            catch(e){
-                reject(e);
-            }
-            resolve(`成功添加"${jp}"："${zh}"到自定义词典`);
+            fs.writeFile(this.mydictPath.fsPath, JSON.stringify(this.dict),(e)=>{
+                if(e){
+                    log.error("自定义词典保存失败！");
+                    reject(e);
+                }
+                else{
+                    log.log("自定义词典保存成功！");
+                    resolve(null);
+                }
+            });
         });
+    }
+
+    load(){
+        return new Promise((resolve, reject)=>{
+            if(this.mydictPath === null){
+                return;
+            }
+            if(fs.existsSync(this.mydictPath.fsPath)){
+                try{
+                    vscode.workspace.fs.readFile(this.mydictPath).then((value)=>{
+                        this.dict = JSON.parse(value.toString());
+                        log.log("自定义词典加载成功！");
+                    });
+                }
+                catch(e){
+                    reject(e);
+                }
+            }
+            else{
+                reject("找不到字典文件！");
+            }
+        });
+    }
+
+    add(jp:string, zh:string):boolean{
+        if(this.dict[jp]){
+            return false;
+        }
+        else{
+            this.dict[jp] = zh;
+            return true;
+        }
     }
 }

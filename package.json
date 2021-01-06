@@ -48,11 +48,19 @@
 			},
 			{
 				"command": "yume.searchMydict",
-				"title": "查询自定义名词表"
+				"title": "查询自定义词典"
+			},
+			{
+				"command": "yume.addToMydict",
+				"title": "添加至自定义词典"
 			},
 			{
 				"command": "yume.translate",
 				"title": "百度翻译"
+			},
+			{
+				"command": "yume.load",
+				"title": "加载配置"
 			}
 		],
 		"keybindings": [
@@ -65,10 +73,19 @@
 				"command": "yume.translate",
 				"key": "ctrl+alt+s",
 				"when": "editorHasSelection"
+			},
+			{
+				"command": "yume.addToMydict",
+				"key": "ctrl+alt+a",
+				"when": "editorHasSelection"
 			}
 		],
 		"menus": {
 			"editor/context": [
+				{
+					"command": "yume.load",
+					"group": "gta@0"
+				},
 				{
 					"when": "editorHasSelection",
 					"command": "yume.jpdict",
@@ -77,6 +94,11 @@
 				{
 					"when": "editorHasSelection",
 					"command": "yume.searchMydict",
+					"group": "gta@3"
+				},
+				{
+					"when": "editorHasSelection",
+					"command": "yume.addToMydict",
 					"group": "gta@2"
 				},
 				{

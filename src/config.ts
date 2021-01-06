@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 "use strict";
 import fs = require("fs");
-import path = require("path");
 import vscode = require("vscode");
+import {log} from "./log";
 
 export class Config{
 
@@ -14,8 +14,9 @@ export class Config{
         appId:string,
         appKey:string
     };
-    rootPath: string | null;
-    mydictPath : string | null;
+    rootPath: vscode.Uri | null;
+    path: vscode.Uri | null;
+    mydictPath : vscode.Uri | null;
     config:{
         [index:string]: object | string,
         hjUrl: string,
@@ -25,7 +26,8 @@ export class Config{
 
     constructor(){
         this.extensionConf = vscode.workspace.getConfiguration("yume");
-        this.rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : null;
+        this.rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : null;
+        this.path = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/yume-config.json") : null;
         this.baiduAPI = {
             "api": this.extensionConf.get("百度API.api") as string,
             "appId": this.extensionConf.get("百度API.appId") as string,
@@ -33,7 +35,7 @@ export class Config{
         };
         this.userAgent = this.extensionConf.get("userAgent") as string;
 
-        this.mydictPath = this.rootPath ? path.join(this.rootPath, ".vscode/yume-config.json") : null;         //自定义名词表
+        this.mydictPath = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/mydict.json") : null;         //自定义名词表
         // 词典来源：https://github.com/pwxcoo/chinese-xinhua
         // idiomUrl : __dirname+"\\dict\\idiom.json",           //成语词典
         // xiehouyuUrl : __dirname+"\\dict\\xiehouyu.json",     //歇后语
@@ -50,35 +52,48 @@ export class Config{
 
             hjUrl : 'https://dict.hjenglish.com/jp/jc/',
         };
+        this.load();
     }
 
-    load(path:string):boolean{
-        try{
-            this.config = require(path);
-        }
-        catch(e){
-            console.error(e);
-            return false;
-        }
-        if(this.config.hjHeader.headers["User-Agent"] !== this.extensionConf.get("userAgent")){
-            this.config.hjHeader.headers["User-Agent"] = this.extensionConf.get("userAgent") as string;
-            this.save(path);
-        }
-        return true;
+    load():Promise<unknown>{
+        return new Promise((resolve, reject)=>{
+            if(this.path){
+                vscode.workspace.fs.readFile(this.path).then((value: Uint8Array)=>{
+                    this.config = JSON.parse(value.toString());
+                    log.log(`配置加载成功！`);
+                },(e)=>{
+                    reject(e);
+                });
+                if(this.config.hjHeader.headers["User-Agent"] !== this.extensionConf.get("userAgent")){
+                    this.config.hjHeader.headers["User-Agent"] = this.extensionConf.get("userAgent") as string;
+                    this.save();
+                }
+            }
+            else{
+                log.error("未打开文件夹！");
+            }
+        });
     }
 
-    save(path:string):boolean{
-        try{
-            fs.writeFileSync(path, JSON.stringify(this.config), {
-                encoding: "utf-8",
-                flag: "w"
-            });
-        }
-        catch(e){
-            console.error(e);
-            return false;
-        }
-        return true;
+    save(){
+        return new Promise((resolve, reject)=>{
+            if(this.path){
+                fs.writeFile(this.path.fsPath, JSON.stringify(this.config), {
+                    encoding: "utf-8",
+                    flag: "w"
+                },(e)=>{
+                    if(e){
+                        reject(e);
+                    }
+                    else{
+                        log.log("设置保存成功！");
+                    }
+                });
+            }
+            else{
+                log.error("设置保存路径空！");
+            }
+        });
     }
 
     setBaiduAPI(api:string, appId:string, appKey:string):boolean{
