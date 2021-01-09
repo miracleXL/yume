@@ -7,7 +7,7 @@ class Log{
 		this.channel = vscode.window.createOutputChannel("Yume");
     }
 
-    print(info:any){
+    print(info:string){
         this.channel.appendLine(info);
         this.channel.show(true);
     }

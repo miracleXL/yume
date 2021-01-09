@@ -2,13 +2,21 @@
 	"name": "yume",
 	"displayName": "yume —— gal汉化助手",
 	"description": "辅助汉化galgame的插件",
-	"version": "0.2.1",
+	"author": {
+		"name": "miracleXL",
+		"email": "1250036141@qq.com"
+	},
+	"version": "0.2.2",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
 	"categories": [
 		"Other"
 	],
+	"repository": {
+		"url": "https://wgaham.coding.net/p/gal-translate-assist/d/yume/git"
+	},
+	"publisher": "miracleXL",
 	"activationEvents": [
 		"onStartupFinished"
 	],
@@ -42,6 +50,10 @@
 			}
 		],
 		"commands": [
+			{
+				"command": "yume.reload",
+				"title": "重新加载Yume"
+			},
 			{
 				"command": "yume.jpdict",
 				"title": "日语字典查询"

@@ -52,7 +52,7 @@ export class Config{
 
             hjUrl : 'https://dict.hjenglish.com/jp/jc/',
         };
-        this.load();
+        // this.load();
     }
 
     load():Promise<unknown>{

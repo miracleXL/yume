@@ -19,13 +19,6 @@ interface JPdata{
     detail: string[]
 }
 
-declare interface Dictionary{
-    cache:{
-        [index:string]: string
-    };
-    search(text:string, convert?:boolean): Promise<string|JPdata>;
-}
-
 declare interface Header{
     [index:string]: {
         [index:string]:string

@@ -14,18 +14,20 @@ class ControlCenter{
 	baidu:BaiduFanyi;
 	_jpdict:JPdict;
 	_mydict:Mydict;
+	cache:{[index:string]:JPdata};
 
 	constructor(){
 		this.config = new Config();
 		this.baidu = new Baidu(this.config.getBaiduAPI());
 		this._jpdict = new JPdict();
-		this.initialled = this.config.rootPath ? true : this.init();
+		this.initialled = this.config.rootPath ? true : false; //this.init();
 		if(this.initialled){
 			this._mydict = new Mydict(this.config.rootPath);
 		}
 		else{
 			this._mydict = new Mydict();
 		}
+		this.cache = {};
 		let yume = this;
         vscode.languages.registerHoverProvider({scheme:"file"},{
             provideHover(document, position, token){
@@ -33,7 +35,17 @@ class ControlCenter{
 				if(jp === ""){
 					return;
 				}
-				let res:string = yume._mydict.search(jp);
+				let res:string = yume._mydict.search(jp) || yume.baidu.cache[jp];
+				for(let i in yume._mydict.dict){
+					if(jp.search(i) > -1){
+						res += `\n* **${i}**: ${yume._mydict.dict[i]}`;
+					}
+				}
+				for(let i in yume.cache){
+					if(jp.search(i) > -1){
+						res += `\n* **${i}**: ${yume._jpdict.convertResult(yume.cache[i],false)}`;
+					}
+				}
 				if(res === ""){
 					return;
 				}
@@ -64,33 +76,49 @@ class ControlCenter{
 		}
 	}
 
+	reload():void{
+		this._mydict.load().catch((e)=>{
+			log.error(e);
+		});
+		this.config.load().catch((e)=>{
+			log.error(e);
+		});
+	}
+
 	translate(){
 		this.baidu.search(this.selectedText()).then((res: string) => {
 			log.print(res);
 		}).catch((e) => {
 			vscode.window.showErrorMessage("查询失败！请检查错误日志！");
-			log.error(e);
+			log.print(e);
 		});
 	}
 
-	jpdict():boolean{
-		if(this.searchMydict()){
+	jpdict(text?:string):boolean{
+		let jp:string = text? text : this.selectedText();
+		if(this.cache[jp]){
+			log.print(this._jpdict.convertResult(this.cache[jp]));
 			return true;
 		}
-		this._jpdict.search(this.selectedText()).then((res : string|JPdata)=>{
-			log.print(res as string);
+		if(this.searchMydict(jp)){
+			return true;
+		}
+		this._jpdict.search(jp).then((res : JPdata)=>{
+			log.print(this._jpdict.convertResult(res));
+			this.cache[jp] = res;
 			return true;
 		}).catch((e)=>{
-			vscode.window.showErrorMessage("查询失败！请检查错误日志");
+			vscode.window.showErrorMessage("查询失败！");
 			log.error(e);
 			return false;
 		});
 		return false;
 	}
 
-	searchMydict():boolean{
+	searchMydict(text?:string):boolean{
 		try{
-			let res:string = this._mydict.search(this.selectedText());
+			let jp:string = text ? text : this.selectedText();
+			let res = this._mydict.search(jp);
 			if(res === ""){
 				return false;
 			}
@@ -156,7 +184,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("yume.searchMydict",()=>{yume.searchMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.addToMydict",()=>{yume.addToMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.translate",()=>{yume.translate();}));
-	context.subscriptions.push(vscode.commands.registerCommand("yume.load",()=>{yume.config.load();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.reload",()=>{yume.reload();}));
 }
 
 // this method is called when your extension is deactivated

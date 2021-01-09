@@ -6,13 +6,11 @@ import vscode = require("vscode");
 import request = require("request");
 import {log} from "./log";
 
-export class JPdict implements Dictionary{
+export class JPdict{
 
-    cache : {
-        [index:string]:string
-    };
     url:string;
     header:Header;
+	// cache:{[index:string]:JPdata};
 
     constructor(header?:Header){
         this.url = 'https://dict.hjenglish.com/jp/jc/';
@@ -22,20 +20,15 @@ export class JPdict implements Dictionary{
                 "Cookie": 'HJ_UID=0f406091-be97-6b64-f1fc-f7b2470883e9; HJ_CST=1; HJ_CSST_3=1;TRACKSITEMAP=3%2C; HJ_SID=393c85c7-abac-f408-6a32-a1f125d7e8c6; _REF=; HJ_SSID_3=4a460f19-c0ae-12a7-8e86-6e360f69ec9b; _SREF_3=; HJ_CMATCH=1'
             }
         };
-        this.cache = {};
+		// this.cache = {};
     }
 
     // convert的值表示是否转换为字符串，为false时返回JPdata
-    search(text : string, convert = true):Promise<string|JPdata>{
+    search(text : string):Promise<JPdata>{
         let dict = this;
         return new Promise((resolve, reject)=>{
             if(text === ""){
                 reject("");
-            }
-            // 缓存查询结果
-            if(this.cache[text]){
-                resolve(this.cache[text]);
-                return;
             }
             let data:JPdata = {
                 word: "",
@@ -67,18 +60,13 @@ export class JPdict implements Dictionary{
                         data["detail"].push(tmp);
                     }
                 });
-                if(convert){
-                    resolve(dict.convertResult(data));
-                }
-                else{
-                    resolve(data);
-                }
+                resolve(data);
             });
         });
     }
 
-    // 转换查询结果至字符串
-    convertResult(jsonData:JPdata){
+    convertResult(jsonData:JPdata, detail:boolean = true){
+        // 转换查询结果至字符串，detail为false时不保留详细释义
         let msg = "";
         msg += jsonData["word"] + "  \n";
         msg += jsonData["katakana"][0] + jsonData["katakana"][1] + "  " + jsonData["type"] + "  \n";
@@ -86,9 +74,11 @@ export class JPdict implements Dictionary{
         for(let data of jsonData["simple"]){
             msg += "  " + data + "  \n";
         }
-        msg += "详细释义：" + "  \n";
-        for(let data of jsonData["detail"]){
-            msg += "  " + data + "  \n";
+        if(detail){
+            msg += "详细释义：" + "  \n";
+            for(let data of jsonData["detail"]){
+                msg += "  " + data + "  \n";
+            }
         }
         // log.log(JSON.stringify(jsonData));
         return msg;
