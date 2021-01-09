@@ -24,6 +24,13 @@ export class Config{
         hjHeader: Header,
     };
 
+    idiomUrl: vscode.Uri;
+    xiehouyuUrl: vscode.Uri;
+    ciUrl: vscode.Uri;
+    wordUrl: vscode.Uri;
+
+    enableDict:EnabledDict;
+
     constructor(){
         this.extensionConf = vscode.workspace.getConfiguration("yume");
         this.rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : null;
@@ -34,13 +41,19 @@ export class Config{
             "appKey": this.extensionConf.get("百度API.appKey") as string,
         };
         this.userAgent = this.extensionConf.get("userAgent") as string;
+        this.enableDict = {
+            char: this.extensionConf.get("启用汉语字典") as boolean,
+            word: this.extensionConf.get("启用汉语词典") as boolean,
+            idiom: this.extensionConf.get("启用成语词典") as boolean,
+            xie: this.extensionConf.get("启用歇后语") as boolean
+        };
 
         this.mydictPath = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/mydict.json") : null;         //自定义名词表
         // 词典来源：https://github.com/pwxcoo/chinese-xinhua
-        // idiomUrl : __dirname+"\\dict\\idiom.json",           //成语词典
-        // xiehouyuUrl : __dirname+"\\dict\\xiehouyu.json",     //歇后语
-        // ciUrl : __dirname+"\\dict\\ci.json",                 //词典
-        // wordUrl : __dirname+"\\dict\\word.json",             //字典
+        this.idiomUrl = vscode.Uri.parse("./src/dict/idiom.json"),           //成语词典
+        this.xiehouyuUrl = vscode.Uri.parse("./src/dict/xiehouyu.json"),     //歇后语
+        this.ciUrl = vscode.Uri.parse("./src/dict/ci.json"),                 //词典
+        this.wordUrl = vscode.Uri.parse("./src/dict/word.json"),             //字典
 
         this.config = {
             hjHeader : {
@@ -53,6 +66,22 @@ export class Config{
             hjUrl : 'https://dict.hjenglish.com/jp/jc/',
         };
         // this.load();
+    }
+
+    loadGlobal(){
+        this.extensionConf = vscode.workspace.getConfiguration("yume");
+        this.baiduAPI = {
+            "api": this.extensionConf.get("百度API.api") as string,
+            "appId": this.extensionConf.get("百度API.appId") as string,
+            "appKey": this.extensionConf.get("百度API.appKey") as string,
+        };
+        this.userAgent = this.extensionConf.get("userAgent") as string;
+        this.enableDict = {
+            char: this.extensionConf.get("启用汉语字典") as boolean,
+            word: this.extensionConf.get("启用汉语词典") as boolean,
+            idiom: this.extensionConf.get("启用成语词典") as boolean,
+            xie: this.extensionConf.get("启用歇后语") as boolean
+        };
     }
 
     load():Promise<unknown>{
@@ -96,14 +125,25 @@ export class Config{
         });
     }
 
-    setBaiduAPI(api:string, appId:string, appKey:string):boolean{
-        this.baiduAPI.api = api;
-        this.baiduAPI.appId = appId;
-        this.baiduAPI.appKey = appKey;
+    setBaiduAPI():boolean{
+        this.baiduAPI = {
+            "api": this.extensionConf.get("百度API.api") as string,
+            "appId": this.extensionConf.get("百度API.appId") as string,
+            "appKey": this.extensionConf.get("百度API.appKey") as string,
+        };
         return true;
     }
 
     getBaiduAPI(){
         return this.baiduAPI;
+    }
+
+    changeConfig(e:vscode.ConfigurationChangeEvent):boolean{
+        // log.log(e);
+        if(e.affectsConfiguration("yume")){
+            this.loadGlobal();
+            return true;
+        }
+        return false;
     }
 }

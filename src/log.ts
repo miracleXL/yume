@@ -17,6 +17,12 @@ class Log{
     }
 
     error(e:any){
+        if(typeof(e) === "string"){
+            vscode.window.showErrorMessage(e);
+        }
+        else{
+            this.channel.appendLine(e);
+        }
         console.error(e);
     }
 }

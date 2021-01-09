@@ -6,7 +6,7 @@
 		"name": "miracleXL",
 		"email": "1250036141@qq.com"
 	},
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -24,7 +24,7 @@
 	"contributes": {
 		"configuration":[
 			{
-				"title": "yume",
+				"title": "Yume",
 				"properties": {
 					"yume.userAgent": {
 						"type": "string",
@@ -45,6 +45,26 @@
 						"type": "string",
 						"default": "MnwbdXNVP7WK837esfFU",
 						"description": "与上方 app id 对应的密钥"
+					},
+					"yume.启用汉语字典": {
+						"type": "boolean",
+						"default": false,
+						"description": "启用后可查询本地汉语字典"
+					},
+					"yume.启用汉语词典": {
+						"type": "boolean",
+						"default": false,
+						"description": "启用后可查询本地汉语词典"
+					},
+					"yume.启用成语词典": {
+						"type": "boolean",
+						"default": false,
+						"description": "启用后可查询本地成语词典"
+					},
+					"yume.启用歇后语": {
+						"type": "boolean",
+						"default": false,
+						"description": "启用后可查询歇后语，用处不大且准确度不高，不建议开启"
 					}
 				}
 			}
@@ -69,6 +89,26 @@
 			{
 				"command": "yume.translate",
 				"title": "百度翻译"
+			},
+			{
+				"command": "yume.chineseChar",
+				"title": "查询汉字"
+			},
+			{
+				"command": "yume.chineseWord",
+				"title": "查询词语"
+			},
+			{
+				"command": "yume.chineseIdiom",
+				"title": "查询成语"
+			},
+			{
+				"command": "yume.xiehouyu",
+				"title": "查询歇后语"
+			},
+			{
+				"command": "yume.chinese",
+				"title": "汉语智能查询"
 			}
 		],
 		"keybindings": [
@@ -85,6 +125,11 @@
 			{
 				"command": "yume.addToMydict",
 				"key": "ctrl+alt+a",
+				"when": "editorHasSelection"
+			},
+			{
+				"command": "yume.chinese",
+				"key": "ctrl+alt+x",
 				"when": "editorHasSelection"
 			}
 		],
@@ -107,8 +152,13 @@
 				},
 				{
 					"when": "editorHasSelection",
-					"command": "yume.translate",
+					"command": "yume.chinese",
 					"group": "gta@4"
+				},
+				{
+					"when": "editorHasSelection",
+					"command": "yume.translate",
+					"group": "gta@0"
 				}
 			]
 		}

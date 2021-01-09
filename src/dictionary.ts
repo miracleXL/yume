@@ -161,3 +161,129 @@ export class Mydict{
         }
     }
 }
+
+export class ZHdict{
+    enable:EnabledDict;
+    word:{[word:string]:string};        // 词语
+    idiom:{[object:string]:{
+        derivation:string,
+        example:string,
+        explanation:string,
+        pinyin:string,
+        word:string,
+        abbreviation: string
+    }};                                 // 成语
+    char:{[text:string]:{
+        word:string,
+        oldword:string,
+        strokes:string,
+        pinyin:string,
+        radicals:string,
+        explanation:string,
+        more:string
+    }};                                 // 字
+    xiehouyu:{[text:string]:string};    //歇后语
+    constructor(config:EnabledDict){
+        this.enable = {
+            char: config.char,
+            word: config.word,
+            idiom: config.idiom,
+            xie: config.xie
+        };
+        this.word = config.word ? require("./dict/ci.json") : {};
+        this.idiom = config.idiom ? require("./dict/idiom.json") : {};
+        this.char = config.char ? require("./dict/word.json") : {};
+        this.xiehouyu = config.xie ? require("./dict/xiehouyu.json") : {};
+    }
+
+    reload(config:EnabledDict){
+        log.log(config);
+        this.word = config.word && (config.word !== this.enable.word) ? require("./dict/ci.json") : {};
+        this.idiom = config.idiom && (config.idiom !== this.enable.idiom) ? require("./dict/idiom.json") : {};
+        this.char = config.char && (config.char !== this.enable.char) ? require("./dict/word.json") : {};
+        this.xiehouyu = config.xie && (config.xie !== this.enable.xie) ? require("./dict/xiehouyu.json") : {};
+        log.log(this.enable);
+        this.enable = {
+            char: config.char,
+            word: config.word,
+            idiom: config.idiom,
+            xie: config.xie
+        };
+        log.log(Object.keys(this.word).length);
+    }
+
+    autoSearch(text:string):string{
+        if(text.length === 1){
+            return this.searchChar(text);
+        }
+        if(text.length > 4){
+            let res = this.searchXiehouyu(text);
+            if(res !== ""){
+                return res;
+            }
+            res = this.searchIdiom(text);
+            if(res !== ""){
+                return res;
+            }
+            return this.searchWord(text);
+        }
+        if(text.length === 4){
+            let res = this.searchIdiom(text);
+            if(res !== ""){
+                return res;
+            }
+            res = this.searchWord(text);
+            if(res !== ""){
+                return res;
+            }
+            return this.searchXiehouyu(text);
+        }
+        else{
+            let res = this.searchWord(text);
+            if(res !== ""){
+                return res;
+            }
+            res = this.searchIdiom(text);
+            return res === "" ? this.searchXiehouyu(text) : res;
+        }
+    }
+
+    searchChar(text:string, more:boolean = false):string{
+        let tmp = this.char[text];
+        if(tmp){
+            let res:string = `${text}(${tmp.oldword})\n  释义：${tmp.explanation}`;
+            if(more){
+                res += `\n  更多：${tmp.more}`;
+            }
+            return res;
+        }
+        return "";
+    }
+
+    searchWord(text:string):string{
+        let tmp = this.word[text];
+        if(tmp){
+            return `${text}：${tmp}`;
+        }
+        return "";
+    }
+
+    searchIdiom(text:string, example:boolean = false):string{
+        let tmp = this.idiom[text];
+        if(tmp){
+            let res = `${text}：\n  释义：${tmp.explanation}\n  出处：${tmp.derivation}`;
+            if(example){
+                res += `\n  例：${tmp.example}`;
+            }
+        }
+        return "";
+    }
+
+    searchXiehouyu(text:string):string{
+        let tmp = this.xiehouyu[text];
+        if(tmp){
+            return `${text}：${tmp}`;
+        }
+        return "";
+    }
+}

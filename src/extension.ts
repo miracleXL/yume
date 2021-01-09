@@ -4,7 +4,7 @@
 import * as vscode from 'vscode';
 import {Config} from "./config";
 import {Baidu} from "./baiduAPI";
-import {JPdict, Mydict} from "./dictionary";
+import {JPdict, Mydict, ZHdict} from "./dictionary";
 import { log } from './log';
 
 class ControlCenter{
@@ -14,6 +14,7 @@ class ControlCenter{
 	baidu:BaiduFanyi;
 	_jpdict:JPdict;
 	_mydict:Mydict;
+	_zhdict:ZHdict;
 	cache:{[index:string]:JPdata};
 
 	constructor(){
@@ -27,6 +28,7 @@ class ControlCenter{
 		else{
 			this._mydict = new Mydict();
 		}
+		this._zhdict = new ZHdict(this.config.enableDict);
 		this.cache = {};
 		let yume = this;
         vscode.languages.registerHoverProvider({scheme:"file"},{
@@ -35,7 +37,7 @@ class ControlCenter{
 				if(jp === ""){
 					return;
 				}
-				let res:string = yume._mydict.search(jp) || yume.baidu.cache[jp];
+				let res:string = yume.baidu.cache[jp] || "";
 				for(let i in yume._mydict.dict){
 					if(jp.search(i) > -1){
 						res += `\n* **${i}**: ${yume._mydict.dict[i]}`;
@@ -66,9 +68,9 @@ class ControlCenter{
 	}
 
 	save(){
-		this.config.save().catch((e)=>{
-			log.error(e);
-		});
+		// this.config.save().catch((e)=>{
+		// 	log.error(e);
+		// });
 		if(this._mydict){
 			this._mydict.save().catch((e)=>{
 				log.error(e);
@@ -80,9 +82,9 @@ class ControlCenter{
 		this._mydict.load().catch((e)=>{
 			log.error(e);
 		});
-		this.config.load().catch((e)=>{
-			log.error(e);
-		});
+		// this.config.load().catch((e)=>{
+		// 	log.error(e);
+		// });
 	}
 
 	translate(){
@@ -161,6 +163,65 @@ class ControlCenter{
 		let selection = editor.selection;
 		return editor.document.getText(selection);
 	}
+
+	// 查询单个汉字
+	searchChar():boolean{
+		let char = this.selectedText();
+		if(char.length !== 1){
+			return false;
+		}
+		let res = this._zhdict.searchChar(char);
+		if(res === ""){
+			log.error("查询失败！");
+			return false;
+		}
+		log.print(res);
+		return true;
+	}
+
+	searchWord():boolean{
+		let word = this.selectedText();
+		let res = word === "" ? "" : this._zhdict.searchWord(word);
+		if(res === ""){
+			log.error("查询失败！");
+			return false;
+		}
+		log.print(res);
+		return true;
+	}
+
+	searchIdiom():boolean{
+		let text = this.selectedText();
+		let res = text === "" ? "" : this._zhdict.searchIdiom(text);
+		if(res === ""){
+			log.error("查询失败！");
+			return false;
+		}
+		log.print(res);
+		return true;
+	}
+
+	searchXiehouyu():boolean{
+		let text = this.selectedText();
+		let res = text === "" ? "" : this._zhdict.searchXiehouyu(text);
+		if(res === ""){
+			log.error("查询失败！");
+			return false;
+		}
+		log.print(res);
+		return true;
+	}
+
+	dictChinese():boolean{
+		let text = this.selectedText();
+		let res = text === "" ? "" : this._zhdict.autoSearch(text);
+		if(res === ""){
+			log.error("查询失败！");
+			return false;
+		}
+		log.print(res);
+		return true;
+	}
 }
 
 let yume:ControlCenter;
@@ -180,11 +241,25 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
+	// 注册命令
 	context.subscriptions.push(vscode.commands.registerCommand('yume.jpdict',()=>{yume.jpdict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.searchMydict",()=>{yume.searchMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.addToMydict",()=>{yume.addToMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.translate",()=>{yume.translate();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseChar",()=>{yume.searchChar();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseWord",()=>{yume.searchWord();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseIdiom",()=>{yume.searchIdiom();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.xiehouyu",()=>{yume.searchXiehouyu();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.chinese",()=>{yume.dictChinese();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.reload",()=>{yume.reload();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.init",()=>{yume.init();}));
+	// 注册事件
+	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((e)=>{
+		if(yume.config.changeConfig(e)){
+			yume._zhdict.reload(yume.config.enableDict);
+		}
+	}));
+	
 }
 
 // this method is called when your extension is deactivated
