@@ -41,6 +41,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
     * Git
     * 坚果云
 
+## ver 0.2.4
+
+新增：查询汉语词典，包括字、词、成语、歇后语。快捷键Ctrl+Alt+X自动猜测查询。删除添加至自定义词典的快捷键。
+
+## ver 0.2.3
+
+新增功能：浮窗提示当前行内最近查询过的内容
+
 ## ver 0.2.2
 
 完善自定义词典功能，可划词翻译或右键查询，查询日语词典也会优先搜索自定义词典。

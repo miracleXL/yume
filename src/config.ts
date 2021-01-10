@@ -32,6 +32,7 @@ export class Config{
     enableDict:EnabledDict;
 
     constructor(){
+        // 读取全局配置
         this.extensionConf = vscode.workspace.getConfiguration("yume");
         this.rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : null;
         this.path = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/yume-config.json") : null;
@@ -48,6 +49,7 @@ export class Config{
             xie: this.extensionConf.get("启用歇后语") as boolean
         };
 
+        // 默认配置
         this.mydictPath = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/mydict.json") : null;         //自定义名词表
         // 词典来源：https://github.com/pwxcoo/chinese-xinhua
         this.idiomUrl = vscode.Uri.parse("./src/dict/idiom.json"),           //成语词典
@@ -62,10 +64,8 @@ export class Config{
                     "Cookie": 'HJ_UID=0f406091-be97-6b64-f1fc-f7b2470883e9; HJ_CST=1; HJ_CSST_3=1;TRACKSITEMAP=3%2C; HJ_SID=393c85c7-abac-f408-6a32-a1f125d7e8c6; _REF=; HJ_SSID_3=4a460f19-c0ae-12a7-8e86-6e360f69ec9b; _SREF_3=; HJ_CMATCH=1'
                 }
             },
-
             hjUrl : 'https://dict.hjenglish.com/jp/jc/',
         };
-        // this.load();
     }
 
     loadGlobal(){

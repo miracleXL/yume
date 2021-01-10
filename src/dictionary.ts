@@ -197,7 +197,7 @@ export class ZHdict{
     }
 
     reload(config:EnabledDict){
-        log.log(config);
+        // log.log(config);
         if(config.word){
             this.word = this.enable.word ? this.word : require("./dict/ci.json");
         }else{
@@ -218,14 +218,14 @@ export class ZHdict{
         }else{
             this.xiehouyu = {};
         }
-        log.log(this.enable);
+        // log.log(this.enable);
         this.enable = {
             char: config.char,
             word: config.word,
             idiom: config.idiom,
             xie: config.xie
         };
-        log.log(Object.keys(this.word).length);
+        log.log(Object.keys(this.idiom).length);
     }
 
     autoSearch(text:string):string{
@@ -267,7 +267,7 @@ export class ZHdict{
     searchChar(text:string, more:boolean = false):string{
         let tmp = this.char[text];
         if(tmp){
-            let res:string = `${text}(${tmp.oldword})\n  释义：${tmp.explanation}`;
+            let res:string = `* ${text}(${tmp.oldword})\n  释义：${tmp.explanation}`;
             if(more){
                 res += `\n  更多：${tmp.more}`;
             }
@@ -279,7 +279,7 @@ export class ZHdict{
     searchWord(text:string):string{
         let tmp = this.word[text];
         if(tmp){
-            return `${text}：${tmp}`;
+            return `* ${text}：${tmp}`;
         }
         return "";
     }
@@ -287,10 +287,12 @@ export class ZHdict{
     searchIdiom(text:string, example:boolean = false):string{
         let tmp = this.idiom[text];
         if(tmp){
-            let res = `${text}：\n  释义：${tmp.explanation}\n  出处：${tmp.derivation}`;
+            let res = `* ${text}：\n  释义：${tmp.explanation}\n  出处：${tmp.derivation}`;
             if(example){
                 res += `\n  例：${tmp.example}`;
             }
+            // log.log("查询成语成功！");
+            return res;
         }
         return "";
     }
@@ -298,7 +300,7 @@ export class ZHdict{
     searchXiehouyu(text:string):string{
         let tmp = this.xiehouyu[text];
         if(tmp){
-            return `${text}：${tmp}`;
+            return `* ${text}：${tmp}`;
         }
         return "";
     }

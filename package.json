@@ -6,7 +6,7 @@
 		"name": "miracleXL",
 		"email": "1250036141@qq.com"
 	},
-	"version": "0.2.3",
+	"version": "0.2.4",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -108,7 +108,7 @@
 			},
 			{
 				"command": "yume.chinese",
-				"title": "汉语智能查询"
+				"title": "汉语自动猜测查询"
 			}
 		],
 		"keybindings": [
@@ -120,11 +120,6 @@
 			{
 				"command": "yume.translate",
 				"key": "ctrl+alt+s",
-				"when": "editorHasSelection"
-			},
-			{
-				"command": "yume.addToMydict",
-				"key": "ctrl+alt+a",
 				"when": "editorHasSelection"
 			},
 			{
@@ -154,6 +149,26 @@
 					"when": "editorHasSelection",
 					"command": "yume.chinese",
 					"group": "gta@4"
+				},
+				{
+					"when": "config.yume.启用汉语字典 && editorHasSelection",
+					"command": "yume.chineseChar",
+					"group": "gta@5"
+				},
+				{
+					"when": "config.yume.启用汉语词典 && editorHasSelection",
+					"command": "yume.chineseWord",
+					"group": "gta@6"
+				},
+				{
+					"when": "config.yume.启用成语词典 && editorHasSelection",
+					"command": "yume.chineseIdiom",
+					"group": "gta@7"
+				},
+				{
+					"when": "config.yume.启用歇后语 && editorHasSelection",
+					"command": "yume.xiehouyu",
+					"group": "gta@8"
 				},
 				{
 					"when": "editorHasSelection",
