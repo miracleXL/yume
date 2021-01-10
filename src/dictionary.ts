@@ -190,18 +190,34 @@ export class ZHdict{
             idiom: config.idiom,
             xie: config.xie
         };
-        this.word = config.word ? require("./dict/ci.json") : {};
-        this.idiom = config.idiom ? require("./dict/idiom.json") : {};
-        this.char = config.char ? require("./dict/word.json") : {};
-        this.xiehouyu = config.xie ? require("./dict/xiehouyu.json") : {};
+        this.char = config.char ? require("./dict/word.json") : {}; // 字
+        this.word = config.word ? require("./dict/ci.json") : {}; // 词
+        this.idiom = config.idiom ? require("./dict/idiom.json") : {}; // 成语
+        this.xiehouyu = config.xie ? require("./dict/xiehouyu.json") : {}; // 歇后语
     }
 
     reload(config:EnabledDict){
         log.log(config);
-        this.word = config.word && (config.word !== this.enable.word) ? require("./dict/ci.json") : {};
-        this.idiom = config.idiom && (config.idiom !== this.enable.idiom) ? require("./dict/idiom.json") : {};
-        this.char = config.char && (config.char !== this.enable.char) ? require("./dict/word.json") : {};
-        this.xiehouyu = config.xie && (config.xie !== this.enable.xie) ? require("./dict/xiehouyu.json") : {};
+        if(config.word){
+            this.word = this.enable.word ? this.word : require("./dict/ci.json");
+        }else{
+            this.word = {};
+        }
+        if(config.idiom){
+            this.idiom = this.enable.idiom ? this.idiom : require("./dict/idiom.json");
+        }else{
+            this.idiom = {};
+        }
+        if(config.char){
+            this.char = this.enable.char ? this.char : require("./dict/word.json");
+        }else{
+            this.char = {};
+        }
+        if(config.xie){
+            this.xiehouyu = this.enable.xie ? this.xiehouyu : require("./dict/xiehouyu.json");
+        }else{
+            this.xiehouyu = {};
+        }
         log.log(this.enable);
         this.enable = {
             char: config.char,
