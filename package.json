@@ -6,7 +6,7 @@
 		"name": "miracleXL",
 		"email": "1250036141@qq.com"
 	},
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -18,7 +18,9 @@
 	},
 	"publisher": "miracleXL",
 	"activationEvents": [
-		"onStartupFinished"
+		"onStartupFinished",
+		"workspaceContains:.vscode/mydict.json",
+		"workspaceContains:.vscode/yume-config.json"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -151,22 +153,22 @@
 					"group": "gta@4"
 				},
 				{
-					"when": "config.yume.启用汉语字典 && editorHasSelection",
+					"when": "config.yume.启用汉语字典",
 					"command": "yume.chineseChar",
 					"group": "gta@5"
 				},
 				{
-					"when": "config.yume.启用汉语词典 && editorHasSelection",
+					"when": "config.yume.启用汉语词典",
 					"command": "yume.chineseWord",
 					"group": "gta@6"
 				},
 				{
-					"when": "config.yume.启用成语词典 && editorHasSelection",
+					"when": "config.yume.启用成语词典",
 					"command": "yume.chineseIdiom",
 					"group": "gta@7"
 				},
 				{
-					"when": "config.yume.启用歇后语 && editorHasSelection",
+					"when": "config.yume.启用歇后语",
 					"command": "yume.xiehouyu",
 					"group": "gta@8"
 				},

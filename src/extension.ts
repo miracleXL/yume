@@ -30,8 +30,22 @@ class ControlCenter{
 		}
 		this._zhdict = new ZHdict(this.config.enableDict);
 		this.cache = {};
-		let yume = this;
-        vscode.languages.registerHoverProvider({scheme:"file"},{
+		this.register();
+	}
+
+	init():boolean{
+		try{
+			this.config.save();
+		}
+		catch(e){
+			log.error(e);
+			return false;
+		}
+		return true;
+	}
+
+	register(){
+		vscode.languages.registerHoverProvider({scheme:"file"},{
             provideHover(document, position, token){
 				let jp = yume.selectedText() || document.getText(document.getWordRangeAtPosition(position));
 				if(jp === ""){
@@ -54,17 +68,6 @@ class ControlCenter{
                 return new vscode.Hover(res);
             }
         });
-	}
-
-	init():boolean{
-		try{
-			this.config.save();
-		}
-		catch(e){
-			log.error(e);
-			return false;
-		}
-		return true;
 	}
 
 	save(){
@@ -96,8 +99,9 @@ class ControlCenter{
 		});
 	}
 
-	jpdict(text?:string):boolean{
-		let jp:string = text? text : this.selectedText();
+	async jpdict():Promise<boolean>{
+		let text = this.selectedText();
+		let jp:string = text? text : await this.getInput();
 		if(this.cache[jp]){
 			log.print(this._jpdict.convertResult(this.cache[jp]));
 			return true;
@@ -122,6 +126,7 @@ class ControlCenter{
 			let jp:string = text ? text : this.selectedText();
 			let res = this._mydict.search(jp);
 			if(res === ""){
+				log.error("查询失败！");
 				return false;
 			}
 			log.print(res);
@@ -155,7 +160,7 @@ class ControlCenter{
 	}
 
 	// 获取待查询文本
-	selectedText() {
+	selectedText():string {
 		let editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			return "";
@@ -164,9 +169,35 @@ class ControlCenter{
 		return editor.document.getText(selection);
 	}
 
+	// 获取用户手动输入
+	getInput():Promise<string>{
+		return new Promise((resolve, reject)=>{
+			vscode.window.showInputBox().then((text)=>{
+				if(text && text !== ""){
+					resolve(text);
+				}else{
+					reject("");
+				}
+			});
+		});
+	}
+
 	// 查询单个汉字
 	searchChar():boolean{
 		let char = this.selectedText();
+		if(char === ""){
+			vscode.window.showInputBox().then((text)=>{
+				if(text && text.length === 1){
+					let res = this._zhdict.searchChar(text);
+					if(res === ""){
+						log.error("查询失败！");
+						return false;
+					}
+					log.print(res);
+				}
+			});
+			return false;
+		}
 		if(char.length !== 1){
 			return false;
 		}
@@ -181,35 +212,79 @@ class ControlCenter{
 
 	searchWord():boolean{
 		let word = this.selectedText();
-		let res = word === "" ? "" : this._zhdict.searchWord(word);
-		if(res === ""){
-			log.error("查询失败！");
+		if(word === ""){
+			vscode.window.showInputBox().then((text)=>{
+				if(text && text !== ""){
+					let res = this._zhdict.searchWord(text);
+					if(res === ""){
+						log.error("查询失败！");
+						return false;
+					}
+					log.print(res);
+				}
+			});
 			return false;
+		}else{
+			let res = this._zhdict.searchWord(word);
+			if(res === ""){
+				log.error("查询失败！");
+				return false;
+			}
+			log.print(res);
+			return true;
 		}
-		log.print(res);
-		return true;
 	}
 
 	searchIdiom():boolean{
 		let text = this.selectedText();
-		let res = text === "" ? "" : this._zhdict.searchIdiom(text);
-		if(res === ""){
-			log.error("查询失败！");
+		if(text === ""){
+			vscode.window.showInputBox().then((text)=>{
+				if(text && text !== ""){
+					let res = this._zhdict.searchIdiom(text);
+					if(res === ""){
+						log.error("查询失败！");
+						return false;
+					}
+					log.print(res);
+				}
+			});
 			return false;
+		}else{
+			let res = this._zhdict.searchIdiom(text);
+			if(res === ""){
+				log.error("查询失败！");
+				return false;
+			}
+			log.print(res);
+			return true;
 		}
-		log.print(res);
-		return true;
 	}
 
 	searchXiehouyu():boolean{
 		let text = this.selectedText();
-		let res = text === "" ? "" : this._zhdict.searchXiehouyu(text);
-		if(res === ""){
-			log.error("查询失败！");
+		if(text === ""){
+			vscode.window.showInputBox().then((value)=>{
+				if(value && value !== ""){
+					let res = this._zhdict.searchXiehouyu(value);
+					if(res === ""){
+						log.error("查询失败！");
+						return false;
+					}
+					log.print(res);
+					return true;
+				}
+				return false;
+			});
 			return false;
+		}else{
+			let res = this._zhdict.searchXiehouyu(text);
+			if(res === ""){
+				log.error("查询失败！");
+				return false;
+			}
+			log.print(res);
+			return true;
 		}
-		log.print(res);
-		return true;
 	}
 
 	dictChinese():boolean{

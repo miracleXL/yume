@@ -225,7 +225,7 @@ export class ZHdict{
             idiom: config.idiom,
             xie: config.xie
         };
-        log.log(Object.keys(this.idiom).length);
+        // log.log(Object.keys(this.idiom).length);
     }
 
     autoSearch(text:string):string{

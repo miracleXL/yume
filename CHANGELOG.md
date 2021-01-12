@@ -4,7 +4,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 预定下次更新内容
 
-增加汉语词典查询
+角色设定速览，游戏信息速览
 
 ## 待更新
 
@@ -40,6 +40,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 6. 一键上传工具
     * Git
     * 坚果云
+
+## ver 0.2.5
+
+修改：现在查询词典可以在不选中文字的情况下手动输入查询。
 
 ## ver 0.2.4
 
