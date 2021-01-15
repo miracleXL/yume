@@ -48,6 +48,20 @@
 						"default": "MnwbdXNVP7WK837esfFU",
 						"description": "与上方 app id 对应的密钥"
 					},
+					"yume.浮窗.开启行内查询": {
+						"type": "boolean",
+						"default": true,
+						"description": "开启后可以浮窗显示当前行内最近查询过的词"
+					},
+					"yume.浮窗.需要选中": {
+						"type": "boolean",
+						"default": true,
+						"description": "优先查询选中内容，关闭时自动选中vscode分词范围查询（即与Ctrl+D选中的范围一致）"
+					},
+					"yume.沪江词典.显示详细释义": {
+						"type": "boolean",
+						"default": true
+					},
 					"yume.启用汉语字典": {
 						"type": "boolean",
 						"default": false,
@@ -148,7 +162,7 @@
 					"group": "gta@2"
 				},
 				{
-					"when": "editorHasSelection",
+					"when": "editorHasSelection && (config.yume.启用汉语字典 || config.yume.启用汉语词典 || config.yume.启用成语词典 || config.yume.启用歇后语)",
 					"command": "yume.chinese",
 					"group": "gta@4"
 				},

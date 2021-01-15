@@ -7,6 +7,18 @@ import {log} from "./log";
 
 export class Config{
 
+    config:{
+        // [index:string]: object| string | vscode.Uri | null,
+        hjUrl: string,
+        hjHeader: Header,
+        mydictPath : vscode.Uri | null
+    };
+
+    idiomUrl: vscode.Uri;
+    xiehouyuUrl: vscode.Uri;
+    ciUrl: vscode.Uri;
+    wordUrl: vscode.Uri;
+
     extensionConf: vscode.WorkspaceConfiguration;
     userAgent: string;
     baiduAPI: {
@@ -16,20 +28,10 @@ export class Config{
     };
     rootPath: vscode.Uri | null;
     path: vscode.Uri | null;
-    mydictPath : vscode.Uri | null;
-    config:{
-        [index:string]: object | string,
-        hjUrl: string,
-
-        hjHeader: Header,
-    };
-
-    idiomUrl: vscode.Uri;
-    xiehouyuUrl: vscode.Uri;
-    ciUrl: vscode.Uri;
-    wordUrl: vscode.Uri;
-
     enableDict:EnabledDict;
+    hover: boolean;
+    hoverRequireSelect: boolean;
+    jpDetail: boolean;
 
     constructor(){
         // 读取全局配置
@@ -48,9 +50,11 @@ export class Config{
             idiom: this.extensionConf.get("启用成语词典") as boolean,
             xie: this.extensionConf.get("启用歇后语") as boolean
         };
+        this.hover = this.extensionConf.get("浮窗.开启行内查询") as boolean;
+        this.hoverRequireSelect = this.extensionConf.get("浮窗.需要选中") as boolean;
+        this.jpDetail = this.extensionConf.get("沪江词典.显示详细释义") as boolean;
 
         // 默认配置
-        this.mydictPath = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/mydict.json") : null;         //自定义名词表
         // 词典来源：https://github.com/pwxcoo/chinese-xinhua
         this.idiomUrl = vscode.Uri.parse("./src/dict/idiom.json"),           //成语词典
         this.xiehouyuUrl = vscode.Uri.parse("./src/dict/xiehouyu.json"),     //歇后语
@@ -58,6 +62,7 @@ export class Config{
         this.wordUrl = vscode.Uri.parse("./src/dict/word.json"),             //字典
 
         this.config = {
+            mydictPath : this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/mydict.json") : null,
             hjHeader : {
                 headers: {
                     'User-Agent': this.extensionConf.get("userAgent") as string,
@@ -82,6 +87,9 @@ export class Config{
             idiom: this.extensionConf.get("启用成语词典") as boolean,
             xie: this.extensionConf.get("启用歇后语") as boolean
         };
+        this.hover = this.extensionConf.get("浮窗.开启行内查询") as boolean;
+        this.hoverRequireSelect = this.extensionConf.get("浮窗.需要选中") as boolean;
+        this.jpDetail = this.extensionConf.get("沪江词典.显示详细释义") as boolean;
     }
 
     load():Promise<unknown>{

@@ -16,6 +16,7 @@ class ControlCenter{
 	_mydict:Mydict;
 	_zhdict:ZHdict;
 	cache:{[index:string]:JPdata};
+	hover: vscode.Disposable | null;
 
 	constructor(){
 		this.config = new Config();
@@ -30,6 +31,7 @@ class ControlCenter{
 		}
 		this._zhdict = new ZHdict(this.config.enableDict);
 		this.cache = {};
+		this.hover = null;
 		this.register();
 	}
 
@@ -45,9 +47,15 @@ class ControlCenter{
 	}
 
 	register(){
-		vscode.languages.registerHoverProvider({scheme:"file"},{
+		if(this.hover){
+			this.hover.dispose();
+		}
+		this.hover = vscode.languages.registerHoverProvider({scheme:"file"},{
             provideHover(document, position, token){
-				let jp = yume.selectedText() || document.getText(document.getWordRangeAtPosition(position));
+				let jp = yume.selectedText();
+				if(jp === "" && !yume.config.hoverRequireSelect){
+					jp = document.getText(document.getWordRangeAtPosition(position));
+				}
 				if(jp === ""){
 					return;
 				}
@@ -70,6 +78,13 @@ class ControlCenter{
         });
 	}
 
+	unregister(){
+		if(this.hover){
+			this.hover.dispose();
+		}
+		this.hover = null;
+	}
+
 	save(){
 		// this.config.save().catch((e)=>{
 		// 	log.error(e);
@@ -90,8 +105,12 @@ class ControlCenter{
 		// });
 	}
 
-	translate(){
-		this.baidu.search(this.selectedText()).then((res: string) => {
+	async translate(){
+		let text = this.selectedText() || await this.getInput();
+		if(text === ""){
+			return;
+		}
+		this.baidu.search(text).then((res: string) => {
 			log.print(res);
 		}).catch((e) => {
 			vscode.window.showErrorMessage("查询失败！请检查错误日志！");
@@ -103,14 +122,14 @@ class ControlCenter{
 		let text = this.selectedText();
 		let jp:string = text? text : await this.getInput();
 		if(this.cache[jp]){
-			log.print(this._jpdict.convertResult(this.cache[jp]));
+			log.print(this._jpdict.convertResult(this.cache[jp], this.config.jpDetail));
 			return true;
 		}
-		if(this.searchMydict(jp)){
+		if(this.searchMydict(jp, true)){
 			return true;
 		}
 		this._jpdict.search(jp).then((res : JPdata)=>{
-			log.print(this._jpdict.convertResult(res));
+			log.print(this._jpdict.convertResult(res, this.config.jpDetail));
 			this.cache[jp] = res;
 			return true;
 		}).catch((e)=>{
@@ -121,12 +140,12 @@ class ControlCenter{
 		return false;
 	}
 
-	searchMydict(text?:string):boolean{
+	searchMydict(text?:string, nolog = false):boolean{
 		try{
 			let jp:string = text ? text : this.selectedText();
 			let res = this._mydict.search(jp);
 			if(res === ""){
-				log.error("查询失败！");
+				!nolog && log.error("查询失败！");
 				return false;
 			}
 			log.print(res);
@@ -297,6 +316,20 @@ class ControlCenter{
 		log.print(res);
 		return true;
 	}
+
+	changeConfig(e:any){
+		if(yume.config.changeConfig(e)){
+			yume._zhdict.reload(yume.config.enableDict);
+			if(yume.config.hover){
+				if(yume.hover){
+					yume.register();
+				}
+			}
+			else{
+				yume.unregister();
+			}
+		}
+	}
 }
 
 let yume:ControlCenter;
@@ -329,11 +362,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("yume.reload",()=>{yume.reload();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.init",()=>{yume.init();}));
 	// 注册事件
-	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((e)=>{
-		if(yume.config.changeConfig(e)){
-			yume._zhdict.reload(yume.config.enableDict);
-		}
-	}));
+	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((e)=>{yume.changeConfig(e);}));
 	
 }
 
