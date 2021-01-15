@@ -27,8 +27,13 @@ export class Baidu implements BaiduFanyi{
 
     search(text:string, to = "zh"):Promise<string>{
         return new Promise((resolve, reject)=>{
+            if(text === ""){
+                reject();
+                return;
+            }
             if(this.cache[text]){
                 resolve(this.cache[text]);
+                return;
             }
             let salt = (new Date()).getTime();
             let data = {
@@ -61,6 +66,7 @@ export class Baidu implements BaiduFanyi{
                         for (let i of sentences.trans_result) {
                             result += i.dst;
                         }
+                        this.cache[text] = result;
                         resolve(result);
                     } else {
                         reject(
