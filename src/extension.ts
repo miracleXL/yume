@@ -2,6 +2,9 @@
 // Import the module and reference it with the alias vscode in your code below
 /// <reference path = "yume.d.ts" />
 import * as vscode from 'vscode';
+import fs = require("fs");
+import path = require("path");
+
 import {Config} from "./config";
 import {Baidu} from "./baiduAPI";
 import {JPdict, Mydict, ZHdict} from "./dictionary";
@@ -22,13 +25,8 @@ class ControlCenter{
 		this.config = new Config();
 		this.baidu = new Baidu(this.config.getBaiduAPI());
 		this._jpdict = new JPdict();
-		this.initialled = this.config.rootPath ? true : false; //this.init();
-		if(this.initialled){
-			this._mydict = new Mydict(this.config.rootPath);
-		}
-		else{
-			this._mydict = new Mydict();
-		}
+		this.initialled = this.config.mydictPath ? fs.existsSync(this.config.mydictPath.fsPath) : false; //this.init();
+		this._mydict = new Mydict(this.config.mydictPath);
 		this._zhdict = new ZHdict(this.config.enableDict);
 		this.cache = {};
 		this.hover = null;
@@ -36,14 +34,42 @@ class ControlCenter{
 	}
 
 	init():boolean{
-		try{
-			this.config.save();
-		}
-		catch(e){
-			log.error(e);
+		if(!this.config.rootPath){
+			log.error("初始化前请先打开项目文件夹！");
 			return false;
 		}
+		if(!fs.existsSync(path.join(this.config.rootPath.fsPath, ".vscode"))){
+			fs.mkdirSync(path.join(this.config.rootPath.fsPath,".vscode"));
+		}
+		this.save().then(()=>{
+			vscode.window.showInformationMessage("初始化完成！");
+		}).catch((e)=>{
+			log.error("初始化失败！");
+			log.error(e);
+		});
+		this.initialled = true;
 		return true;
+	}
+
+	save(){
+		return new Promise<unknown>((resolve, reject)=>{
+			this.config.save().catch((e)=>{
+				reject(e);
+			});
+			this._mydict.save().catch((e)=>{
+				reject(e);
+			});
+			resolve(true);
+		});
+	}
+
+	reload():void{
+		this._mydict.load().catch((e)=>{
+			log.error(e);
+		});
+		this.config.load().catch((e)=>{
+			log.error(e);
+		});
 	}
 
 	register(){
@@ -83,26 +109,6 @@ class ControlCenter{
 			this.hover.dispose();
 		}
 		this.hover = null;
-	}
-
-	save(){
-		// this.config.save().catch((e)=>{
-		// 	log.error(e);
-		// });
-		if(this._mydict){
-			this._mydict.save().catch((e)=>{
-				log.error(e);
-			});
-		}
-	}
-
-	reload():void{
-		this._mydict.load().catch((e)=>{
-			log.error(e);
-		});
-		// this.config.load().catch((e)=>{
-		// 	log.error(e);
-		// });
 	}
 
 	async translate(){
@@ -193,6 +199,10 @@ class ControlCenter{
 					if(zh){
 						if(this._mydict.edit(jp,zh)){
 							vscode.window.showInformationMessage("修改成功！");
+							this._mydict.save().catch((e)=>{
+								log.error("自定义词典保存失败！");
+								log.error(e);
+							});
 						}
 						else{
 							log.error("修改失败！修改项不存在！");

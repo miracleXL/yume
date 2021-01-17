@@ -2,12 +2,11 @@
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## 预定下次更新内容
+## 预定更新
 
-* 添加初始化项目命令
 * 角色设定速览，游戏信息速览
 
-## 待更新
+## 不确定需求
 
 1. 项目配置
     * 为每个项目启用不同的设置项
@@ -23,27 +22,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
     * 当前项目宏指令集
     * 当前游戏引擎解封包步骤
     * 当前游戏引擎调试技巧
-4. 词典工具
-    * 自定义名词表
-        * 角色用词习惯
-        * 专有名词
-    * 调用词典查询
-        * 日语词典
-            * mecab分词
-        * 汉语词典
-            * 近义词
-            * 反义词
-    * 划词翻译
-        * 弹窗或终端输出
-    * 快捷键绑定
-5. 剧本抽取工具
+4. 剧本抽取工具
     * 自定义提取正则表达式
-6. 一键上传工具
+5. 一键上传工具
     * Git
     * 坚果云
 
 ## ver 0.2.6
 
+* 添加初始化项目命令
 * 可修改自定义词典
 
 ## ver 0.2.5

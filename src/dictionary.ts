@@ -90,15 +90,15 @@ export class Mydict{
     dict:{[index:string]:string};
     mydictPath: vscode.Uri | null;
 
-    constructor(rootPath?:vscode.Uri | null){
-        if(rootPath === undefined || rootPath === null){
-            this.dict = {};
-            this.mydictPath = null;
-            return;
-        }
-        this.mydictPath = vscode.Uri.joinPath(rootPath, ".vscode/mydict.json");
+    constructor(path?:vscode.Uri | null){
         this.dict = {};
-        this.load();
+        if(path){
+            this.mydictPath = path;
+            this.load();
+        }
+        else{
+            this.mydictPath = null;
+        }
     }
     
     search(text:string):string{
@@ -113,10 +113,11 @@ export class Mydict{
 
     save():Promise<unknown>{
         return new Promise((resolve, reject)=>{
-            if(this.mydictPath === null || JSON.stringify(this.dict) === "{}"){
+            let data = JSON.stringify(this.dict);
+            if(this.mydictPath === null || (data === "{}" && fs.existsSync(this.mydictPath.fsPath))){
                 return;
             }
-            fs.writeFile(this.mydictPath.fsPath, JSON.stringify(this.dict),(e)=>{
+            fs.writeFile(this.mydictPath.fsPath, data,(e)=>{
                 if(e){
                     log.error("自定义词典保存失败！");
                     reject(e);

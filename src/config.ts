@@ -7,18 +7,20 @@ import {log} from "./log";
 
 export class Config{
 
-    config:{
-        // [index:string]: object| string | vscode.Uri | null,
-        hjUrl: string,
-        hjHeader: Header,
-        mydictPath : vscode.Uri | null
-    };
+    // 项目设置
+    config: object;
+
+    // 默认设置
+    hjUrl: string;
+    hjHeader: Header;
+    mydictPath : vscode.Uri | null;
 
     idiomUrl: vscode.Uri;
     xiehouyuUrl: vscode.Uri;
     ciUrl: vscode.Uri;
     wordUrl: vscode.Uri;
 
+    // 插件全局设置
     extensionConf: vscode.WorkspaceConfiguration;
     userAgent: string;
     baiduAPI: {
@@ -36,8 +38,6 @@ export class Config{
     constructor(){
         // 读取全局配置
         this.extensionConf = vscode.workspace.getConfiguration("yume");
-        this.rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : null;
-        this.path = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/yume-config.json") : null;
         this.baiduAPI = {
             "api": this.extensionConf.get("百度API.api") as string,
             "appId": this.extensionConf.get("百度API.appId") as string,
@@ -55,22 +55,25 @@ export class Config{
         this.jpDetail = this.extensionConf.get("沪江词典.显示详细释义") as boolean;
 
         // 默认配置
+        this.rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : null;
+        this.path = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/yume-config.json") : null;
+        this.mydictPath = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/mydict.json") : null;
         // 词典来源：https://github.com/pwxcoo/chinese-xinhua
         this.idiomUrl = vscode.Uri.parse("./src/dict/idiom.json"),           //成语词典
         this.xiehouyuUrl = vscode.Uri.parse("./src/dict/xiehouyu.json"),     //歇后语
         this.ciUrl = vscode.Uri.parse("./src/dict/ci.json"),                 //词典
         this.wordUrl = vscode.Uri.parse("./src/dict/word.json"),             //字典
 
-        this.config = {
-            mydictPath : this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/mydict.json") : null,
-            hjHeader : {
-                headers: {
-                    'User-Agent': this.extensionConf.get("userAgent") as string,
-                    "Cookie": 'HJ_UID=0f406091-be97-6b64-f1fc-f7b2470883e9; HJ_CST=1; HJ_CSST_3=1;TRACKSITEMAP=3%2C; HJ_SID=393c85c7-abac-f408-6a32-a1f125d7e8c6; _REF=; HJ_SSID_3=4a460f19-c0ae-12a7-8e86-6e360f69ec9b; _SREF_3=; HJ_CMATCH=1'
-                }
-            },
-            hjUrl : 'https://dict.hjenglish.com/jp/jc/',
+        this.hjHeader = {
+            headers: {
+                'User-Agent': this.extensionConf.get("userAgent") as string,
+                "Cookie": 'HJ_UID=0f406091-be97-6b64-f1fc-f7b2470883e9; HJ_CST=1; HJ_CSST_3=1;TRACKSITEMAP=3%2C; HJ_SID=393c85c7-abac-f408-6a32-a1f125d7e8c6; _REF=; HJ_SSID_3=4a460f19-c0ae-12a7-8e86-6e360f69ec9b; _SREF_3=; HJ_CMATCH=1'
+            }
         };
+        this.hjUrl = 'https://dict.hjenglish.com/jp/jc/';
+
+        // 读取项目设置
+        this.config = {};
     }
 
     loadGlobal(){
@@ -101,10 +104,6 @@ export class Config{
                 },(e)=>{
                     reject(e);
                 });
-                if(this.config.hjHeader.headers["User-Agent"] !== this.extensionConf.get("userAgent")){
-                    this.config.hjHeader.headers["User-Agent"] = this.extensionConf.get("userAgent") as string;
-                    this.save();
-                }
             }
             else{
                 log.error("未打开文件夹！");

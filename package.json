@@ -87,6 +87,10 @@
 		],
 		"commands": [
 			{
+				"command": "yume.init",
+				"title": "初始化Yume"
+			},
+			{
 				"command": "yume.reload",
 				"title": "重新加载Yume"
 			},
@@ -149,6 +153,12 @@
 			}
 		],
 		"menus": {
+			"explorer/context": [
+				{
+					"command": "yume.init",
+					"when": "explorerResourceIsFolder"
+				}
+			],
 			"editor/context": [
 				{
 					"when": "editorHasSelection",
