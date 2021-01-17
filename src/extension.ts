@@ -178,6 +178,31 @@ class ControlCenter{
 		}
 	}
 
+	async editMydict(){
+		vscode.window.showQuickPick(this._mydict.getKeys(),{
+			canPickMany: false,
+			ignoreFocusOut: true,
+			placeHolder: "请输入待修改项原文"
+		}).then((jp)=>{
+			if(jp){
+				vscode.window.showInputBox({
+					ignoreFocusOut: true,
+					placeHolder: "请输出修改后内容",
+					value: this._mydict.search(jp)
+				}).then((zh)=>{
+					if(zh){
+						if(this._mydict.edit(jp,zh)){
+							vscode.window.showInformationMessage("修改成功！");
+						}
+						else{
+							log.error("修改失败！修改项不存在！");
+						}
+					}
+				});
+			}
+		});
+	}
+
 	// 获取待查询文本
 	selectedText():string {
 		let editor = vscode.window.activeTextEditor;
@@ -353,6 +378,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('yume.jpdict',()=>{yume.jpdict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.searchMydict",()=>{yume.searchMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.addToMydict",()=>{yume.addToMydict();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.editMydict",()=>{yume.editMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.translate",()=>{yume.translate();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseChar",()=>{yume.searchChar();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseWord",()=>{yume.searchWord();}));

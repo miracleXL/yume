@@ -6,7 +6,7 @@
 		"name": "miracleXL",
 		"email": "1250036141@qq.com"
 	},
-	"version": "0.2.5",
+	"version": "0.2.6",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -103,6 +103,10 @@
 				"title": "添加至自定义词典"
 			},
 			{
+				"command": "yume.editMydict",
+				"title": "修改自定义词典"
+			},
+			{
 				"command": "yume.translate",
 				"title": "百度翻译"
 			},
@@ -162,6 +166,10 @@
 					"group": "gta@2"
 				},
 				{
+					"command": "yume.editMydict",
+					"group": "gta@2"
+				},
+				{
 					"when": "editorHasSelection && (config.yume.启用汉语字典 || config.yume.启用汉语词典 || config.yume.启用成语词典 || config.yume.启用歇后语)",
 					"command": "yume.chinese",
 					"group": "gta@4"
@@ -187,7 +195,7 @@
 					"group": "gta@8"
 				},
 				{
-					"when": "editorHasSelection",
+					"when": "config.yume.百度API.api && yume.百度API.appId && yume.百度API.appKey",
 					"command": "yume.translate",
 					"group": "gta@0"
 				}

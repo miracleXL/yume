@@ -4,7 +4,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 预定下次更新内容
 
-角色设定速览，游戏信息速览
+* 添加初始化项目命令
+* 角色设定速览，游戏信息速览
 
 ## 待更新
 
@@ -40,6 +41,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 6. 一键上传工具
     * Git
     * 坚果云
+
+## ver 0.2.6
+
+* 可修改自定义词典
 
 ## ver 0.2.5
 

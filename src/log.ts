@@ -25,6 +25,10 @@ class Log{
         }
         console.error(e);
     }
+
+    show(info:string){
+        vscode.window.showInformationMessage(info);
+    }
 }
 
 export const log = new Log();

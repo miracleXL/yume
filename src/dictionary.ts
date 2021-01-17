@@ -160,6 +160,22 @@ export class Mydict{
             return true;
         }
     }
+
+    edit(jp:string, zh:string):boolean{
+        if(this.dict[jp]){
+            this.dict[jp] = zh;
+            return true;
+        }
+        return false;
+    }
+
+    getKeys():Array<string>{
+        let keys = [];
+        for(let key in this.dict){
+            keys.push(key);
+        }
+        return keys;
+    }
 }
 
 export class ZHdict{
