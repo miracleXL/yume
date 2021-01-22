@@ -85,7 +85,7 @@ class ControlCenter{
 				if(jp === ""){
 					return;
 				}
-				let res:string = yume.baidu.cache[jp] || "";
+				let res:string = yume.baidu.cache[jp] ? `* 整句机翻：\n  ${yume.baidu.cache[jp]}` : "";
 				for(let i in yume._mydict.dict){
 					if(jp.search(i) > -1){
 						res += `\n* **${i}**: ${yume._mydict.dict[i]}`;
@@ -180,11 +180,15 @@ class ControlCenter{
 			});
 		}
 		else{
-			log.print("请先初始化项目！");
+			log.error("请先初始化项目！");
 		}
 	}
 
 	async editMydict(){
+		if(!this.initialled){
+			log.error("尚未初始化！");
+			return;
+		}
 		vscode.window.showQuickPick(this._mydict.getKeys(),{
 			canPickMany: false,
 			ignoreFocusOut: true,
@@ -234,6 +238,17 @@ class ControlCenter{
 				}
 			});
 		});
+	}
+
+	dictChinese():boolean{
+		let text = this.selectedText();
+		let res = text === "" ? "" : this._zhdict.autoSearch(text);
+		if(res === ""){
+			log.error("查询失败！");
+			return false;
+		}
+		log.print(res);
+		return true;
 	}
 
 	// 查询单个汉字
@@ -339,17 +354,6 @@ class ControlCenter{
 			log.print(res);
 			return true;
 		}
-	}
-
-	dictChinese():boolean{
-		let text = this.selectedText();
-		let res = text === "" ? "" : this._zhdict.autoSearch(text);
-		if(res === ""){
-			log.error("查询失败！");
-			return false;
-		}
-		log.print(res);
-		return true;
 	}
 
 	changeConfig(e:any){

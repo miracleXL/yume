@@ -138,13 +138,11 @@
 		"keybindings": [
 			{
 				"command": "yume.jpdict",
-				"key": "ctrl+alt+w",
-				"when": "editorHasSelection"
+				"key": "ctrl+alt+w"
 			},
 			{
 				"command": "yume.translate",
-				"key": "ctrl+alt+s",
-				"when": "editorHasSelection"
+				"key": "ctrl+alt+s"
 			},
 			{
 				"command": "yume.chinese",
@@ -180,7 +178,7 @@
 					"group": "gta@2"
 				},
 				{
-					"when": "editorHasSelection && (config.yume.启用汉语字典 || config.yume.启用汉语词典 || config.yume.启用成语词典 || config.yume.启用歇后语)",
+					"when": "editorHasSelection",
 					"command": "yume.chinese",
 					"group": "gta@4"
 				},
@@ -205,7 +203,7 @@
 					"group": "gta@8"
 				},
 				{
-					"when": "config.yume.百度API.api && yume.百度API.appId && yume.百度API.appKey",
+					"when": "editorHasSelection",
 					"command": "yume.translate",
 					"group": "gta@0"
 				}

@@ -72,10 +72,10 @@ export class JPdict{
         msg += jsonData["katakana"][0] + jsonData["katakana"][1] + "  " + jsonData["type"] + "  \n";
         msg += "释义：" + "  \n";
         for(let data of jsonData["simple"]){
-            msg += "  " + data + "  \n";
+            msg += "  " + data;
         }
         if(detail){
-            msg += "详细释义：" + "  \n";
+            msg += "\n详细释义：" + "  \n";
             for(let data of jsonData["detail"]){
                 msg += "  " + data + "  \n";
             }
