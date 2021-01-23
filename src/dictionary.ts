@@ -177,6 +177,13 @@ export class Mydict{
         }
         return keys;
     }
+
+    empty():boolean{
+        for(let i in this.dict){
+            return false;
+        }
+        return true;
+    }
 }
 
 export class ZHdict{

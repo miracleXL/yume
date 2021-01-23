@@ -184,14 +184,47 @@ class ControlCenter{
 		}
 	}
 
-	async editMydict(){
-		if(!this.initialled){
-			log.error("尚未初始化！");
+	deleteFromMydict():void{
+		if(this._mydict.empty()){
+			log.error("词典空！");
 			return;
 		}
 		vscode.window.showQuickPick(this._mydict.getKeys(),{
 			canPickMany: false,
 			ignoreFocusOut: true,
+			placeHolder: "请输入待修改项原文"
+		}).then((jp)=>{
+			if(jp){
+				vscode.window.showInputBox({
+					ignoreFocusOut: true,
+					placeHolder: "请输出修改后内容",
+					value: this._mydict.search(jp)
+				}).then((zh)=>{
+					if(zh){
+						if(this._mydict.edit(jp,zh)){
+							vscode.window.showInformationMessage("修改成功！");
+							this._mydict.save().catch((e)=>{
+								log.error("自定义词典保存失败！");
+								log.error(e);
+							});
+						}
+						else{
+							log.error("修改失败！修改项不存在！");
+						}
+					}
+				});
+			}
+		});
+	}
+
+	async editMydict(){
+		if(this._mydict.empty()){
+			log.error("词典空！");
+			return;
+		}
+		vscode.window.showQuickPick(this._mydict.getKeys(),{
+			canPickMany: false,
+			ignoreFocusOut: false,
 			placeHolder: "请输入待修改项原文"
 		}).then((jp)=>{
 			if(jp){
@@ -393,6 +426,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("yume.searchMydict",()=>{yume.searchMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.addToMydict",()=>{yume.addToMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.editMydict",()=>{yume.editMydict();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.deleteFromMydict",()=>{yume.deleteFromMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.translate",()=>{yume.translate();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseChar",()=>{yume.searchChar();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseWord",()=>{yume.searchWord();}));

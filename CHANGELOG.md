@@ -4,7 +4,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 预定更新
 
-* 角色设定速览，游戏信息速览
+* 角色设定速览，游戏信息速览(没想好怎么实现，先咕了)
 
 ## 不确定需求
 
@@ -28,7 +28,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
     * Git
     * 坚果云
 
-## ver 0.2.6
+## ver 0.2.6 => ver 1.0.0
 
 * 添加初始化项目命令
 * 可修改自定义词典

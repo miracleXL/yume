@@ -88,7 +88,7 @@
 		"commands": [
 			{
 				"command": "yume.init",
-				"title": "初始化Yume"
+				"title": "初始化翻译助手"
 			},
 			{
 				"command": "yume.reload",
@@ -105,6 +105,10 @@
 			{
 				"command": "yume.addToMydict",
 				"title": "添加至自定义词典"
+			},
+			{
+				"command": "yume.deleteFromMydict",
+				"title": "从自定义词典中删除"
 			},
 			{
 				"command": "yume.editMydict",
@@ -171,6 +175,10 @@
 				{
 					"when": "editorHasSelection",
 					"command": "yume.addToMydict",
+					"group": "gta@2"
+				},
+				{
+					"command": "yume.deleteFromMydict",
 					"group": "gta@2"
 				},
 				{
