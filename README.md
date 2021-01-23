@@ -2,10 +2,15 @@
 
 原名Galgame Translator Assistant ~~(GTA)~~，后来和朋友讨论后改为 Yume (Your Unsophisticated Multifunctional Enlightenment)
 ~~(发布的时候中二病犯了，临时编的)~~
+
 是否会持续更新待定，有需求的话看情况开发一个独立完整的翻译软件
 
 目录
-[TOC]
+
+* [目前主要功能](#目前主要功能)
+* [安装及使用方法](#安装及使用方法)
+* [已知问题](#已知问题)
+* Release Notes
 
 ## 目前主要功能
 
