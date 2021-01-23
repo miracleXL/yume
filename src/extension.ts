@@ -7,7 +7,7 @@ import path = require("path");
 
 import {Config} from "./config";
 import {Baidu} from "./baiduAPI";
-import {JPdict, Mydict, ZHdict} from "./dictionary";
+import {JPdict, Mydict} from "./dictionary";
 import { log } from './log';
 
 class ControlCenter{
@@ -17,7 +17,6 @@ class ControlCenter{
 	baidu:BaiduFanyi;
 	_jpdict:JPdict;
 	_mydict:Mydict;
-	_zhdict:ZHdict;
 	cache:{[index:string]:JPdata};
 	hover: vscode.Disposable | null;
 
@@ -27,7 +26,6 @@ class ControlCenter{
 		this._jpdict = new JPdict();
 		this.initialled = this.config.mydictPath ? fs.existsSync(this.config.mydictPath.fsPath) : false; //this.init();
 		this._mydict = new Mydict(this.config.mydictPath);
-		this._zhdict = new ZHdict(this.config.enableDict);
 		this.cache = {};
 		this.hover = null;
 		this.register();
@@ -273,125 +271,8 @@ class ControlCenter{
 		});
 	}
 
-	dictChinese():boolean{
-		let text = this.selectedText();
-		let res = text === "" ? "" : this._zhdict.autoSearch(text);
-		if(res === ""){
-			log.error("查询失败！");
-			return false;
-		}
-		log.print(res);
-		return true;
-	}
-
-	// 查询单个汉字
-	searchChar():boolean{
-		let char = this.selectedText();
-		if(char === ""){
-			vscode.window.showInputBox().then((text)=>{
-				if(text && text.length === 1){
-					let res = this._zhdict.searchChar(text);
-					if(res === ""){
-						log.error("查询失败！");
-						return false;
-					}
-					log.print(res);
-				}
-			});
-			return false;
-		}
-		if(char.length !== 1){
-			return false;
-		}
-		let res = this._zhdict.searchChar(char);
-		if(res === ""){
-			log.error("查询失败！");
-			return false;
-		}
-		log.print(res);
-		return true;
-	}
-
-	searchWord():boolean{
-		let word = this.selectedText();
-		if(word === ""){
-			vscode.window.showInputBox().then((text)=>{
-				if(text && text !== ""){
-					let res = this._zhdict.searchWord(text);
-					if(res === ""){
-						log.error("查询失败！");
-						return false;
-					}
-					log.print(res);
-				}
-			});
-			return false;
-		}else{
-			let res = this._zhdict.searchWord(word);
-			if(res === ""){
-				log.error("查询失败！");
-				return false;
-			}
-			log.print(res);
-			return true;
-		}
-	}
-
-	searchIdiom():boolean{
-		let text = this.selectedText();
-		if(text === ""){
-			vscode.window.showInputBox().then((text)=>{
-				if(text && text !== ""){
-					let res = this._zhdict.searchIdiom(text);
-					if(res === ""){
-						log.error("查询失败！");
-						return false;
-					}
-					log.print(res);
-				}
-			});
-			return false;
-		}else{
-			let res = this._zhdict.searchIdiom(text);
-			if(res === ""){
-				log.error("查询失败！");
-				return false;
-			}
-			log.print(res);
-			return true;
-		}
-	}
-
-	searchXiehouyu():boolean{
-		let text = this.selectedText();
-		if(text === ""){
-			vscode.window.showInputBox().then((value)=>{
-				if(value && value !== ""){
-					let res = this._zhdict.searchXiehouyu(value);
-					if(res === ""){
-						log.error("查询失败！");
-						return false;
-					}
-					log.print(res);
-					return true;
-				}
-				return false;
-			});
-			return false;
-		}else{
-			let res = this._zhdict.searchXiehouyu(text);
-			if(res === ""){
-				log.error("查询失败！");
-				return false;
-			}
-			log.print(res);
-			return true;
-		}
-	}
-
 	changeConfig(e:any){
 		if(yume.config.changeConfig(e)){
-			yume._zhdict.reload(yume.config.enableDict);
 			if(yume.config.hover){
 				if(yume.hover){
 					yume.register();
@@ -428,11 +309,6 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("yume.editMydict",()=>{yume.editMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.deleteFromMydict",()=>{yume.deleteFromMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.translate",()=>{yume.translate();}));
-	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseChar",()=>{yume.searchChar();}));
-	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseWord",()=>{yume.searchWord();}));
-	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseIdiom",()=>{yume.searchIdiom();}));
-	context.subscriptions.push(vscode.commands.registerCommand("yume.xiehouyu",()=>{yume.searchXiehouyu();}));
-	context.subscriptions.push(vscode.commands.registerCommand("yume.chinese",()=>{yume.dictChinese();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.reload",()=>{yume.reload();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.init",()=>{yume.init();}));
 	// 注册事件

@@ -6,7 +6,7 @@
 		"name": "miracleXL",
 		"email": "1250036141@qq.com"
 	},
-	"version": "0.2.6",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -62,26 +62,6 @@
 					"yume.沪江词典.显示详细释义": {
 						"type": "boolean",
 						"default": true
-					},
-					"yume.启用汉语字典": {
-						"type": "boolean",
-						"default": false,
-						"description": "启用后可查询本地汉语字典"
-					},
-					"yume.启用汉语词典": {
-						"type": "boolean",
-						"default": false,
-						"description": "启用后可查询本地汉语词典"
-					},
-					"yume.启用成语词典": {
-						"type": "boolean",
-						"default": false,
-						"description": "启用后可查询本地成语词典"
-					},
-					"yume.启用歇后语": {
-						"type": "boolean",
-						"default": false,
-						"description": "启用后可查询歇后语，用处不大且准确度不高，不建议开启"
 					}
 				}
 			}
@@ -118,26 +98,6 @@
 			{
 				"command": "yume.translate",
 				"title": "百度翻译"
-			},
-			{
-				"command": "yume.chineseChar",
-				"title": "查询汉字"
-			},
-			{
-				"command": "yume.chineseWord",
-				"title": "查询词语"
-			},
-			{
-				"command": "yume.chineseIdiom",
-				"title": "查询成语"
-			},
-			{
-				"command": "yume.xiehouyu",
-				"title": "查询歇后语"
-			},
-			{
-				"command": "yume.chinese",
-				"title": "汉语自动猜测查询"
 			}
 		],
 		"keybindings": [
@@ -148,11 +108,6 @@
 			{
 				"command": "yume.translate",
 				"key": "ctrl+alt+s"
-			},
-			{
-				"command": "yume.chinese",
-				"key": "ctrl+alt+x",
-				"when": "editorHasSelection"
 			}
 		],
 		"menus": {
@@ -185,31 +140,6 @@
 				{
 					"command": "yume.editMydict",
 					"group": "gta@2"
-				},
-				{
-					"when": "editorHasSelection",
-					"command": "yume.chinese",
-					"group": "gta@4"
-				},
-				{
-					"when": "config.yume.启用汉语字典",
-					"command": "yume.chineseChar",
-					"group": "gta@5"
-				},
-				{
-					"when": "config.yume.启用汉语词典",
-					"command": "yume.chineseWord",
-					"group": "gta@6"
-				},
-				{
-					"when": "config.yume.启用成语词典",
-					"command": "yume.chineseIdiom",
-					"group": "gta@7"
-				},
-				{
-					"when": "config.yume.启用歇后语",
-					"command": "yume.xiehouyu",
-					"group": "gta@8"
 				},
 				{
 					"when": "editorHasSelection",
