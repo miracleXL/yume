@@ -14,7 +14,8 @@
 		"Other"
 	],
 	"repository": {
-		"url": "https://wgaham.coding.net/p/gal-translate-assist/d/yume/git"
+		"type": "git",
+		"url": "https://github.com/miracleXL/yume"
 	},
 	"publisher": "miracleXL",
 	"activationEvents": [
