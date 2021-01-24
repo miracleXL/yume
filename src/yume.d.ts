@@ -14,7 +14,7 @@ declare interface BaiduFanyi{
 interface JPdata{
     word: string,
     katakana: string[],
-    type: string,
+    type: string[],
     simple: string[],
     detail: string[]
 }
