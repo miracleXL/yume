@@ -1,6 +1,6 @@
 {
 	"name": "yume",
-	"displayName": "yume —— gal汉化助手",
+	"displayName": "Yume —— Galgame汉化助手",
 	"description": "辅助汉化galgame的插件",
 	"author": {
 		"name": "miracleXL",
@@ -18,7 +18,6 @@
 		"url": "https://github.com/miracleXL/yume"
 	},
 	"publisher": "miracleXL",
-	"icon": "pic/yume.jpg",
 	"activationEvents": [
 		"onStartupFinished",
 		"workspaceContains:.vscode/mydict.json",
