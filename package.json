@@ -18,6 +18,7 @@
 		"url": "https://github.com/miracleXL/yume"
 	},
 	"publisher": "miracleXL",
+	"icon": "pic/yume.jpg",
 	"activationEvents": [
 		"onStartupFinished",
 		"workspaceContains:.vscode/mydict.json",

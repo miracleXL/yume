@@ -2,7 +2,7 @@
 .vscode-test/**
 out/**
 src/**
-pic/**
+pic/设计图/**
 .gitignore
 .yarnrc
 vsc-extension-quickstart.md
