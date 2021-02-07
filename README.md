@@ -28,7 +28,7 @@
 
 ![演示1](https://raw.githubusercontent.com/miracleXL/yume/master/pic/实用演示.png)
 ![演示2](https://raw.githubusercontent.com/miracleXL/yume/master/pic/修改自定义词典.png)
-计划变更和详细更新记录请查阅[**更改日志**](CHANGELOG.md)
+计划变更和详细更新记录请查阅[**更改日志**](https://github.com/miracleXL/yume/CHANGELOG.md)
 
 ## 安装及使用方法
 
