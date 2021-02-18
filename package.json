@@ -1,6 +1,6 @@
 {
 	"name": "yume",
-	"displayName": "Yume —— Galgame汉化助手",
+	"displayName": "Yume —— Galgame翻译助手",
 	"description": "辅助汉化galgame的插件",
 	"author": {
 		"name": "miracleXL",
@@ -45,12 +45,12 @@
 					},
 					"yume.百度API.appId": {
 						"type": "string",
-						"default": "20200627000507662",
+						"default": "",
 						"description": "可在百度翻译开放平台注册账号获取"
 					},
 					"yume.百度API.appKey": {
 						"type": "string",
-						"default": "MnwbdXNVP7WK837esfFU",
+						"default": "",
 						"description": "与上方 app id 对应的密钥"
 					},
 					"yume.浮窗.开启行内查询": {
