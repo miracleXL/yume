@@ -64,12 +64,8 @@ class ControlCenter{
 	}
 
 	reload():void{
-		this._mydict.load().catch((e)=>{
-			log.error(e);
-		});
-		this.config.load().catch((e)=>{
-			log.error(e);
-		});
+		this.config = new Config();
+		this._mydict = new Mydict(this.config.mydictPath);
 	}
 
 	register(){
@@ -386,7 +382,7 @@ class ControlCenter{
 		if(yume.config.changeConfig(e)){
 			yume._zhdict.reload(yume.config.enableDict);
 			if(yume.config.hover){
-				if(yume.hover){
+				if(!yume.hover){
 					yume.register();
 				}
 			}
