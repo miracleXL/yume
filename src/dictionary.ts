@@ -33,7 +33,7 @@ export class JPdict{
             let data:JPdata = {
                 word: "",
                 katakana: [],
-                type: "",
+                type: [],
                 simple: [],
                 detail: []
             };
@@ -50,9 +50,9 @@ export class JPdict{
                 $('.word-info .pronounces span').each((index:number, element:any)=>{
                     data["katakana"].push($(element).text());
                 });
-                data["type"] = $('.simple h2').text();
-                $('.simple li').each((index:number, element:any) =>{
-                    data["simple"].push($(element).text());
+                data["type"] = $('.simple h2').text().replace("】【","】 【").split(" ");
+                $('.simple ul').each((index:number, element:any) =>{
+                    data["simple"].push($(element).children().text());
                 });
                 $('.detail-groups p').each((index:number, element:any) =>{
                     let tmp = $(element).text().trim();
@@ -60,6 +60,7 @@ export class JPdict{
                         data["detail"].push(tmp);
                     }
                 });
+                // log.log(data);
                 resolve(data);
             });
         });
@@ -69,18 +70,16 @@ export class JPdict{
         // 转换查询结果至字符串，detail为false时不保留详细释义
         let msg = "";
         msg += jsonData["word"] + "  \n";
-        msg += jsonData["katakana"][0] + jsonData["katakana"][1] + "  " + jsonData["type"] + "  \n";
-        msg += "释义：" + "  \n";
-        for(let data of jsonData["simple"]){
-            msg += "  " + data;
+        msg += jsonData["katakana"][0] + jsonData["katakana"][1] + "  \n";
+        for(let i in jsonData["type"]){
+            msg += " " + jsonData["type"][i] + "：  \n   " + jsonData["simple"][i] + "  \n";
         }
         if(detail){
-            msg += "\n详细释义：" + "  \n";
+            msg += "  \n详细释义：" + "  \n";
             for(let data of jsonData["detail"]){
                 msg += "  " + data + "  \n";
             }
         }
-        // log.log(JSON.stringify(jsonData));
         return msg;
     }
 }
@@ -160,6 +159,14 @@ export class Mydict{
             this.dict[jp] = zh;
             return true;
         }
+    }
+
+    delete(jp:string):boolean{
+        if(this.dict[jp]){
+            delete(this.dict[jp]);
+            return true;
+        }
+        return false;
     }
 
     edit(jp:string, zh:string):boolean{

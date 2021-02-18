@@ -1,17 +1,21 @@
 {
 	"name": "yume",
-	"displayName": "yume —— gal汉化助手",
+	"displayName": "Yume —— Galgame翻译助手",
 	"description": "辅助汉化galgame的插件",
 	"author": {
 		"name": "miracleXL",
 		"email": "1250036141@qq.com"
 	},
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
 	"categories": [
 		"Other"
+	],
+	"tags": [
+		"galgame",
+		"translate"
 	],
 	"repository": {
 		"type": "git",
@@ -25,7 +29,7 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
-		"configuration":[
+		"configuration": [
 			{
 				"title": "Yume",
 				"properties": {
@@ -35,18 +39,18 @@
 						"description": "自定义查询网络词典时使用的UA"
 					},
 					"yume.百度API.api": {
-						"type":"string",
-						"default":"https://fanyi-api.baidu.com/api/trans/vip/translate",
+						"type": "string",
+						"default": "https://fanyi-api.baidu.com/api/trans/vip/translate",
 						"description": "根据百度翻译开放平台要求设置"
 					},
 					"yume.百度API.appId": {
-						"type":"string",
-						"default":"20200627000507662",
+						"type": "string",
+						"default": "",
 						"description": "可在百度翻译开放平台注册账号获取"
 					},
 					"yume.百度API.appKey": {
 						"type": "string",
-						"default": "MnwbdXNVP7WK837esfFU",
+						"default": "",
 						"description": "与上方 app id 对应的密钥"
 					},
 					"yume.浮窗.开启行内查询": {

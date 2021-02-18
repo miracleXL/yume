@@ -35,6 +35,9 @@ export class Baidu implements BaiduFanyi{
                 resolve(this.cache[text]);
                 return;
             }
+            if(this.api.appId === "" || this.api.appKey === ""){
+                reject("请检查设置是否正确填写百度机翻API！");
+            }
             let salt = (new Date()).getTime();
             let data = {
                 q: text,

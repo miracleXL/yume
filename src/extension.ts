@@ -62,12 +62,8 @@ class ControlCenter{
 	}
 
 	reload():void{
-		this._mydict.load().catch((e)=>{
-			log.error(e);
-		});
-		this.config.load().catch((e)=>{
-			log.error(e);
-		});
+		this.config = new Config();
+		this._mydict = new Mydict(this.config.mydictPath);
 	}
 
 	register(){
@@ -83,15 +79,16 @@ class ControlCenter{
 				if(jp === ""){
 					return;
 				}
-				let res:string = yume.baidu.cache[jp] ? `* 整句机翻：\n  ${yume.baidu.cache[jp]}` : "";
+				let res:string = yume.baidu.cache[jp] ? `* 整句机翻：  \n  ${yume.baidu.cache[jp]}` : "";
 				for(let i in yume._mydict.dict){
 					if(jp.search(i) > -1){
-						res += `\n* **${i}**: ${yume._mydict.dict[i]}`;
+						res += `  \n* **${i}**: ${yume._mydict.dict[i]}`;
 					}
 				}
 				for(let i in yume.cache){
 					if(jp.search(i) > -1){
-						res += `\n* **${i}**: ${yume._jpdict.convertResult(yume.cache[i],false)}`;
+						let tmp = yume._jpdict.convertResult(yume.cache[i],false);
+						res += `\n* **${i}**: ${tmp}`;
 					}
 				}
 				if(res === ""){
@@ -189,28 +186,20 @@ class ControlCenter{
 		}
 		vscode.window.showQuickPick(this._mydict.getKeys(),{
 			canPickMany: false,
-			ignoreFocusOut: true,
+			ignoreFocusOut: false,
 			placeHolder: "请输入待修改项原文"
 		}).then((jp)=>{
 			if(jp){
-				vscode.window.showInputBox({
-					ignoreFocusOut: true,
-					placeHolder: "请输出修改后内容",
-					value: this._mydict.search(jp)
-				}).then((zh)=>{
-					if(zh){
-						if(this._mydict.edit(jp,zh)){
-							vscode.window.showInformationMessage("修改成功！");
-							this._mydict.save().catch((e)=>{
-								log.error("自定义词典保存失败！");
-								log.error(e);
-							});
-						}
-						else{
-							log.error("修改失败！修改项不存在！");
-						}
-					}
-				});
+				if(this._mydict.delete(jp)){
+					this._mydict.save().then(()=>{
+						log.show("删除成功！");
+					}).catch((e)=>{
+						log.error(e);
+					});
+				}
+				else{
+					log.error("删除失败！删除项不存在！");
+				}
 			}
 		});
 	}
@@ -274,7 +263,7 @@ class ControlCenter{
 	changeConfig(e:any){
 		if(yume.config.changeConfig(e)){
 			if(yume.config.hover){
-				if(yume.hover){
+				if(!yume.hover){
 					yume.register();
 				}
 			}
@@ -318,5 +307,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-	yume.save();
+	if(yume.initialled){
+		yume.save();
+	}
 }
