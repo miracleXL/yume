@@ -8,7 +8,6 @@ declare interface BaiduFanyi{
     };
     userAgent: string;
     search(text:string,to?:string):Promise<string>;
-    getMD5(content:string):string;
 }
 
 interface JPdata{

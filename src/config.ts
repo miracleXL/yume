@@ -30,10 +30,13 @@ export class Config{
     };
     rootPath: vscode.Uri | null;
     path: vscode.Uri | null;
+    logPath: vscode.Uri | null;
     enableDict:EnabledDict;
     hover: boolean;
     hoverRequireSelect: boolean;
     jpDetail: boolean;
+    originReg: RegExp;
+    translateReg: RegExp;
 
     constructor(){
         // 读取全局配置
@@ -53,11 +56,16 @@ export class Config{
         this.hover = this.extensionConf.get("浮窗.开启行内查询") as boolean;
         this.hoverRequireSelect = this.extensionConf.get("浮窗.需要选中") as boolean;
         this.jpDetail = this.extensionConf.get("沪江词典.显示详细释义") as boolean;
+        this.originReg = new RegExp(this.extensionConf.get("原文行起始标志") as string);
+        this.translateReg = new RegExp(this.extensionConf.get("译文行起始标志") as string);
+
 
         // 默认配置
         this.rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri : null;
         this.path = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/yume-config.json") : null;
         this.mydictPath = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/mydict.json") : null;
+        this.logPath = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/yume.log") : null;
+    
         // 词典来源：https://github.com/pwxcoo/chinese-xinhua
         this.idiomUrl = vscode.Uri.parse("./src/dict/idiom.json"),           //成语词典
         this.xiehouyuUrl = vscode.Uri.parse("./src/dict/xiehouyu.json"),     //歇后语
@@ -78,11 +86,7 @@ export class Config{
 
     loadGlobal(){
         this.extensionConf = vscode.workspace.getConfiguration("yume");
-        this.baiduAPI = {
-            "api": this.extensionConf.get("百度API.api") as string,
-            "appId": this.extensionConf.get("百度API.appId") as string,
-            "appKey": this.extensionConf.get("百度API.appKey") as string,
-        };
+        this.setBaiduAPI();
         this.userAgent = this.extensionConf.get("userAgent") as string;
         this.enableDict = {
             char: this.extensionConf.get("启用汉语字典") as boolean,
@@ -93,6 +97,8 @@ export class Config{
         this.hover = this.extensionConf.get("浮窗.开启行内查询") as boolean;
         this.hoverRequireSelect = this.extensionConf.get("浮窗.需要选中") as boolean;
         this.jpDetail = this.extensionConf.get("沪江词典.显示详细释义") as boolean;
+        this.originReg = new RegExp(this.extensionConf.get("原文行起始标志") as string);
+        this.translateReg = new RegExp(this.extensionConf.get("译文行起始标志") as string);
     }
 
     load():Promise<unknown>{
@@ -142,6 +148,7 @@ export class Config{
     }
 
     getBaiduAPI(){
+        this.setBaiduAPI();
         return this.baiduAPI;
     }
 

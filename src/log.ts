@@ -1,8 +1,10 @@
 /// <reference path = "yume.d.ts" />
 import vscode = require("vscode");
+import fs = require("fs");
 
 class Log{
     channel: vscode.OutputChannel;
+
     constructor(){
 		this.channel = vscode.window.createOutputChannel("Yume");
     }
@@ -32,3 +34,21 @@ class Log{
 }
 
 export const log = new Log();
+
+export class LogFile{
+
+    filePath: vscode.Uri;
+
+    constructor(path:vscode.Uri){
+        this.filePath = path;
+    }
+
+    write(info:string){
+        fs.writeFile(this.filePath.fsPath, info, {
+            encoding:"utf-8",
+            flag: "a"
+        },(err)=>{
+            log.log(err);
+        });
+    }
+}

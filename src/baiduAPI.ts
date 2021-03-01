@@ -85,7 +85,7 @@ export class Baidu implements BaiduFanyi{
         });
     }
 
-    getMD5(content:string):string{
+    private getMD5(content:string):string{
         if(!content){
             return content;
         }

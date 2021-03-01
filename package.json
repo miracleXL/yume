@@ -6,7 +6,7 @@
 		"name": "miracleXL",
 		"email": "1250036141@qq.com"
 	},
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -23,7 +23,7 @@
 	},
 	"publisher": "miracleXL",
 	"activationEvents": [
-		"onStartupFinished",
+		"onView:yume.initView",
 		"workspaceContains:.vscode/mydict.json",
 		"workspaceContains:.vscode/yume-config.json"
 	],
@@ -86,6 +86,16 @@
 						"type": "boolean",
 						"default": false,
 						"description": "启用后可查询歇后语，用处不大且准确度不高，不建议开启"
+					},
+					"yume.原文行起始标志": {
+						"type": "string",
+						"default": "",
+						"description": "正则表达式，从匹配到的标志后开始为原文内容"
+					},
+					"yume.译文行起始标志": {
+						"type": "string",
+						"default": "",
+						"description": "正则表达式，从匹配到的标志后开始为译文内容"
 					}
 				}
 			}
@@ -168,60 +178,112 @@
 			],
 			"editor/context": [
 				{
-					"when": "editorHasSelection",
+					"when": "editorLangId == plaintext && editorHasSelection",
 					"command": "yume.jpdict",
 					"group": "gta@1"
 				},
 				{
-					"when": "editorHasSelection",
+					"when": "editorLangId == plaintext && editorHasSelection",
 					"command": "yume.searchMydict",
 					"group": "gta@3"
 				},
 				{
-					"when": "editorHasSelection",
+					"when": "editorLangId == plaintext && editorHasSelection",
 					"command": "yume.addToMydict",
 					"group": "gta@2"
 				},
 				{
+					"when": "editorLangId == plaintext",
 					"command": "yume.deleteFromMydict",
 					"group": "gta@2"
 				},
 				{
+					"when": "editorLangId == plaintext",
 					"command": "yume.editMydict",
 					"group": "gta@2"
 				},
 				{
-					"when": "editorHasSelection",
+					"when": "editorLangId == plaintext && editorHasSelection",
 					"command": "yume.chinese",
 					"group": "gta@4"
 				},
 				{
-					"when": "config.yume.启用汉语字典",
+					"when": "editorLangId == plaintext && config.yume.启用汉语字典",
 					"command": "yume.chineseChar",
 					"group": "gta@5"
 				},
 				{
-					"when": "config.yume.启用汉语词典",
+					"when": "editorLangId == plaintext && config.yume.启用汉语词典",
 					"command": "yume.chineseWord",
 					"group": "gta@6"
 				},
 				{
-					"when": "config.yume.启用成语词典",
+					"when": "editorLangId == plaintext && config.yume.启用成语词典",
 					"command": "yume.chineseIdiom",
 					"group": "gta@7"
 				},
 				{
-					"when": "config.yume.启用歇后语",
+					"when": "editorLangId == plaintext && config.yume.启用歇后语",
 					"command": "yume.xiehouyu",
 					"group": "gta@8"
 				},
 				{
-					"when": "editorHasSelection",
+					"when": "editorLangId == plaintext && editorHasSelection",
 					"command": "yume.translate",
 					"group": "gta@0"
 				}
 			]
-		}
+		},
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "yumeViews",
+					"title": "Yume项目管理",
+					"icon": "pic/view.png"
+				}
+			]
+		},
+		"views": {
+			"yumeViews":[
+				{
+					"id": "yume.initView",
+					"name": "初始化",
+					"when": "!yume:init"
+				},
+				{
+					"id": "yume.project",
+					"name": "项目设置",
+					"when": "yume:init"
+				},
+				{
+					"id": "yume.scenario",
+					"name": "剧本管理",
+					"when": "yume:init"
+				},
+				{
+					"id": "yume.sync",
+					"name": "同步",
+					"when": "yume:init"
+				}
+			]
+		},
+		"viewsWelcome": [
+			{
+				"view": "yume.initView",
+				"contents": "请先初始化项目\n[初始化](command:yume.init)",
+				"when": "!yume:init"
+			},
+			{
+				"view": "yume.scenario",
+				"contents": "暂未实现",
+				"when": "yume:init"
+			},
+			{
+				"view": "yume.sync",
+				"contents": "暂未实现",
+				"when": "yume:init"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
