@@ -28,6 +28,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
     * Git
     * 坚果云
 
+## ver 1.0.2
+
+彻底删除汉语词典功能，添加格式化，为左侧TreeView留好框架
+
 ## ver 0.2.6 => ver 1.0.0
 
 * 添加初始化项目命令

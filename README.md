@@ -23,8 +23,7 @@
     使用时先*选中需要翻译的内容*，**快捷键**(Ctrl + Alt + S)，或者使用**右键**百度翻译
 * 浮动提示
     划词翻译、整句翻译，提示选中内容中最近查询过的词汇、自定义名词
-* 汉语词典
-    内置简略汉语词典（[词典来源](https://github.com/pwxcoo/chinese-xinhua)），包括字、词、成语、歇后语，效率及准确率都不高，非必要建议在设置中关闭。
+* ~~汉语词典~~(已废弃)
 
 ![演示1](https://raw.githubusercontent.com/miracleXL/yume/master/pic/实用演示.png)
 ![演示2](https://raw.githubusercontent.com/miracleXL/yume/master/pic/修改自定义词典.png)
@@ -49,6 +48,11 @@
 * 日语词典查询结果词性较多且含义不同时，显示方式不友好，难以判断词性对应翻译
 
 ## Release Notes
+
+## 1.0.2
+
+因为操作失误，干脆彻底删去汉语词典功能
+添加格式化文档，将各类标点统一为汉语标点。
 
 ### 1.0.0
 
