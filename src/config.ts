@@ -15,11 +15,6 @@ export class Config{
     hjHeader: Header;
     mydictPath : vscode.Uri | null;
 
-    idiomUrl: vscode.Uri;
-    xiehouyuUrl: vscode.Uri;
-    ciUrl: vscode.Uri;
-    wordUrl: vscode.Uri;
-
     // 插件全局设置
     extensionConf: vscode.WorkspaceConfiguration;
     userAgent: string;
@@ -31,7 +26,6 @@ export class Config{
     rootPath: vscode.Uri | null;
     path: vscode.Uri | null;
     logPath: vscode.Uri | null;
-    enableDict:EnabledDict;
     hover: boolean;
     hoverRequireSelect: boolean;
     jpDetail: boolean;
@@ -47,12 +41,6 @@ export class Config{
             "appKey": this.extensionConf.get("百度API.appKey") as string,
         };
         this.userAgent = this.extensionConf.get("userAgent") as string;
-        this.enableDict = {
-            char: this.extensionConf.get("启用汉语字典") as boolean,
-            word: this.extensionConf.get("启用汉语词典") as boolean,
-            idiom: this.extensionConf.get("启用成语词典") as boolean,
-            xie: this.extensionConf.get("启用歇后语") as boolean
-        };
         this.hover = this.extensionConf.get("浮窗.开启行内查询") as boolean;
         this.hoverRequireSelect = this.extensionConf.get("浮窗.需要选中") as boolean;
         this.jpDetail = this.extensionConf.get("沪江词典.显示详细释义") as boolean;
@@ -65,12 +53,6 @@ export class Config{
         this.path = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/yume-config.json") : null;
         this.mydictPath = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/mydict.json") : null;
         this.logPath = this.rootPath ? vscode.Uri.joinPath(this.rootPath, ".vscode/yume.log") : null;
-    
-        // 词典来源：https://github.com/pwxcoo/chinese-xinhua
-        this.idiomUrl = vscode.Uri.parse("./src/dict/idiom.json"),           //成语词典
-        this.xiehouyuUrl = vscode.Uri.parse("./src/dict/xiehouyu.json"),     //歇后语
-        this.ciUrl = vscode.Uri.parse("./src/dict/ci.json"),                 //词典
-        this.wordUrl = vscode.Uri.parse("./src/dict/word.json"),             //字典
 
         this.hjHeader = {
             headers: {
@@ -88,12 +70,6 @@ export class Config{
         this.extensionConf = vscode.workspace.getConfiguration("yume");
         this.setBaiduAPI();
         this.userAgent = this.extensionConf.get("userAgent") as string;
-        this.enableDict = {
-            char: this.extensionConf.get("启用汉语字典") as boolean,
-            word: this.extensionConf.get("启用汉语词典") as boolean,
-            idiom: this.extensionConf.get("启用成语词典") as boolean,
-            xie: this.extensionConf.get("启用歇后语") as boolean
-        };
         this.hover = this.extensionConf.get("浮窗.开启行内查询") as boolean;
         this.hoverRequireSelect = this.extensionConf.get("浮窗.需要选中") as boolean;
         this.jpDetail = this.extensionConf.get("沪江词典.显示详细释义") as boolean;

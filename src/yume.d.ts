@@ -23,11 +23,3 @@ declare interface Header{
         [index:string]:string
     };
 }
-
-declare interface EnabledDict{
-    [index:string]:boolean,    
-    char:boolean,
-    word:boolean,
-    idiom:boolean,
-    xie:boolean
-}
