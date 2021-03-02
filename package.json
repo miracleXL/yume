@@ -181,6 +181,12 @@
 					"when": "!yume:init"
 				},
 				{
+					"id": "yume.extension",
+					"name": "插件管理",
+					"when": "yume:init",
+					"contextualTitle": "测试"
+				},
+				{
 					"id": "yume.project",
 					"name": "项目设置",
 					"when": "yume:init"
@@ -202,6 +208,11 @@
 				"view": "yume.initView",
 				"contents": "请先初始化项目\n[初始化](command:yume.init)",
 				"when": "!yume:init"
+			},
+			{
+				"view": "yume.extension",
+				"contents": "出现未知问题时，可尝试重新加载\n[重新加载Yume](command:yume.reload)",
+				"when": "yume:init"
 			},
 			{
 				"view": "yume.scenario",
