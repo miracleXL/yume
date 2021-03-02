@@ -88,8 +88,10 @@ export class Mydict{
 
     dict:{[index:string]:string};
     mydictPath: vscode.Uri | null;
+    edited: boolean;
 
     constructor(path?:vscode.Uri | null){
+        this.edited = false;
         this.dict = {};
         if(path){
             this.mydictPath = path;
@@ -113,7 +115,8 @@ export class Mydict{
     save():Promise<unknown>{
         return new Promise((resolve, reject)=>{
             let data = JSON.stringify(this.dict);
-            if(this.mydictPath === null || (data === "{}" && fs.existsSync(this.mydictPath.fsPath))){
+            if(this.mydictPath === null || !this.edited){
+                resolve(null);
                 return;
             }
             fs.writeFile(this.mydictPath.fsPath, data,(e)=>{
@@ -157,6 +160,7 @@ export class Mydict{
         }
         else{
             this.dict[jp] = zh;
+            this.edited = true;
             return true;
         }
     }
@@ -164,6 +168,7 @@ export class Mydict{
     delete(jp:string):boolean{
         if(this.dict[jp]){
             delete(this.dict[jp]);
+            this.edited = true;
             return true;
         }
         return false;
@@ -172,6 +177,7 @@ export class Mydict{
     edit(jp:string, zh:string):boolean{
         if(this.dict[jp]){
             this.dict[jp] = zh;
+            this.edited = true;
             return true;
         }
         return false;

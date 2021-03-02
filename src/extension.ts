@@ -5,20 +5,24 @@ import * as vscode from 'vscode';
 import fs = require("fs");
 import path = require("path");
 
-import {Config} from "./config";
-import {Baidu} from "./baiduAPI";
-import {JPdict, Mydict} from "./dictionary";
+import { Config } from "./config";
+import { Baidu } from "./baiduAPI";
+import { JPdict, Mydict } from "./dictionary";
+import { TreeViewManager } from "./treeView";
+import { Formatter } from "./formatter";
 import { log } from './log';
 
 class ControlCenter{
 
-	config: Config;
+	private config: Config;
+	private _jpdict:JPdict;
+	private _mydict:Mydict;
+	private baidu:BaiduFanyi;
+	private cache:{[index:string]:JPdata};
+	private hover: vscode.Disposable | null;
+	private treeview: TreeViewManager;
+	private formatter: Formatter;
 	initialled: boolean;
-	baidu:BaiduFanyi;
-	_jpdict:JPdict;
-	_mydict:Mydict;
-	cache:{[index:string]:JPdata};
-	hover: vscode.Disposable | null;
 
 	constructor(){
 		this.config = new Config();
@@ -28,6 +32,8 @@ class ControlCenter{
 		this._mydict = new Mydict(this.config.mydictPath);
 		this.cache = {};
 		this.hover = null;
+		this.treeview = new TreeViewManager();
+		this.formatter = new Formatter(this.config.originReg, this.config.translateReg);
 		this.register();
 	}
 
@@ -116,6 +122,7 @@ class ControlCenter{
 		}).catch((e) => {
 			vscode.window.showErrorMessage("查询失败！请检查错误日志！");
 			log.print(e);
+			this.baidu.api = this.config.getBaiduAPI();
 		});
 	}
 
@@ -270,6 +277,7 @@ class ControlCenter{
 			else{
 				yume.unregister();
 			}
+			yume.formatter.updateReg(yume.config.originReg, yume.config.translateReg);
 		}
 	}
 }
@@ -285,7 +293,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	yume = new ControlCenter();
 	console.log('Yume运行成功！');
-	// vscode.window.showInformationMessage("插件加载成功！");
+	vscode.commands.executeCommand("setContext", "yume:init", yume.initialled);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
