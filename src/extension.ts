@@ -430,7 +430,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("yume.chineseIdiom",()=>{yume.searchIdiom();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.xiehouyu",()=>{yume.searchXiehouyu();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.chinese",()=>{yume.dictChinese();}));
-	context.subscriptions.push(vscode.commands.registerCommand("yume.reload",()=>{yume.reload();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.reload",()=>{
+		yume = new ControlCenter();
+	}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.init",()=>{yume.init();}));
 	// 注册事件
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((e)=>{yume.changeConfig(e);}));
@@ -439,7 +441,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-	if(yume.initialled){
-		yume.save();
-	}
+	// if(yume.initialled){
+	// 	yume.save();
+	// }
 }

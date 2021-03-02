@@ -4,11 +4,11 @@ import * as vscode from "vscode";
 
 export class TreeViewManager{
     project: ProjectManager;
-    dispose: vscode.Disposable | null | undefined;
+    provider: vscode.Disposable | null | undefined;
 
     constructor(){
         this.project = new ProjectManager();
-        this.dispose = this.register();
+        this.provider = this.register();
     }
 
     register():vscode.Disposable{
@@ -16,9 +16,9 @@ export class TreeViewManager{
     }
 
     unregister(){
-        if(this.dispose){
-            this.dispose.dispose();
-            this.dispose = null;
+        if(this.provider){
+            this.provider.dispose();
+            this.provider = null;
         }
     }
 }
@@ -35,6 +35,52 @@ class ProjectManager implements vscode.TreeDataProvider<vscode.TreeItem>{
     }
 }
 
-class ProjectInfo implements vscode.TreeItem{
-    constructor(){}
+class Game implements vscode.TreeItem{
+    name: string;
+    characters: Character[];
+    info: string;
+    id: string;
+    tooltip: string | undefined;
+    
+    constructor(){
+        this.name = "";
+        this.characters = [];
+        this.info = "";
+        this.id = "game";
+        this.tooltip = "游戏信息";
+    }
+}
+
+class Character{
+    info: string;
+    charRoute: boolean;
+    phrase: string[];
+
+    constructor(){
+        this.info = "";
+        this.charRoute = false;
+        this.phrase = [];
+    }
+}
+
+class Group implements vscode.TreeItem{
+    name: string;
+    members: Translator[];
+    tooltip: string | undefined;
+    
+    constructor(){
+        this.name = "";
+        this.members = [];
+        this.tooltip = "汉化组信息";
+    }
+}
+
+class Translator{
+    name: string;
+    task: string;
+
+    constructor(){
+        this.name = "";
+        this.task = "";
+    }
 }

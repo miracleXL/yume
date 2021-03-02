@@ -9,8 +9,6 @@ class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
     constructor(oriReg:RegExp, transReg:RegExp){
         this.origin = oriReg;
         this.translate = transReg;
-        log.log(`oriReg: ${oriReg}`);
-        log.log(`transReg: ${transReg}`);
     }
 
     updateReg(origin:RegExp, translate: RegExp){
@@ -48,6 +46,7 @@ class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
                 operations.push(vscode.TextEdit.replace(line.range, pre[0] + this.format(text.replace(this.translate,""))));
             }
         }
+        log.log("格式化完成！");
         return operations;
     }
 }
