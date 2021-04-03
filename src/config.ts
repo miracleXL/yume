@@ -29,8 +29,8 @@ export class Config{
     hover: boolean;
     hoverRequireSelect: boolean;
     jpDetail: boolean;
-    originReg: RegExp;
-    translateReg: RegExp;
+    originReg: string;
+    translateReg: string;
 
     constructor(){
         // 读取全局配置
@@ -44,8 +44,8 @@ export class Config{
         this.hover = this.extensionConf.get("浮窗.开启行内查询") as boolean;
         this.hoverRequireSelect = this.extensionConf.get("浮窗.需要选中") as boolean;
         this.jpDetail = this.extensionConf.get("沪江词典.显示详细释义") as boolean;
-        this.originReg = new RegExp(this.extensionConf.get("原文行起始标志") as string);
-        this.translateReg = new RegExp(this.extensionConf.get("译文行起始标志") as string);
+        this.originReg = this.extensionConf.get("原文行起始标志") as string;
+        this.translateReg = this.extensionConf.get("译文行起始标志") as string;
 
 
         // 默认配置
@@ -73,8 +73,8 @@ export class Config{
         this.hover = this.extensionConf.get("浮窗.开启行内查询") as boolean;
         this.hoverRequireSelect = this.extensionConf.get("浮窗.需要选中") as boolean;
         this.jpDetail = this.extensionConf.get("沪江词典.显示详细释义") as boolean;
-        this.originReg = new RegExp(this.extensionConf.get("原文行起始标志") as string);
-        this.translateReg = new RegExp(this.extensionConf.get("译文行起始标志") as string);
+        this.originReg = this.extensionConf.get("原文行起始标志") as string;
+        this.translateReg = this.extensionConf.get("译文行起始标志") as string;
     }
 
     load():Promise<unknown>{

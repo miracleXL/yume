@@ -4,16 +4,20 @@ import * as vscode from "vscode";
 import { log } from "./log";
 
 class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
+    originText: string;
     origin: RegExp;
+    translateText: string;
     translate: RegExp;
-    constructor(oriReg:RegExp, transReg:RegExp){
-        this.origin = oriReg;
-        this.translate = transReg;
+    constructor(oriReg:string, transReg:string){
+        this.originText = oriReg;
+        this.origin = new RegExp(oriReg);
+        this.translateText = transReg;
+        this.translate = new RegExp(transReg);
     }
 
-    updateReg(origin:RegExp, translate: RegExp){
-        this.origin = origin;
-        this.translate = translate;
+    updateReg(origin:string, translate: string){
+        this.origin = new RegExp(origin);
+        this.translate = new RegExp(translate);
     }
 
     format(text:string):string{
@@ -21,18 +25,24 @@ class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
         .replace(/[~〜∼∽⁓]/g, "～")
         .replace(/(ー{2,})|(－{2,})|(-{2,})/g, "——")
         .replace(/[,]/g, "，")
-        .replace(/[\.]/g, "。")
-        .replace(/[:]/, "：")
+        .replace(/(?<=\D)\.(?=\D)?/g, "。")
+        .replace(/(?<=\D) *= *(?=\D)/g," ＝ ")
+        .replace(/[:]/g, "：")
         .replace(/[;]/g, "；")
-        .replace(/[!]/g, "！")
-        .replace(/[?]/g, "？")
-        .replace(/[(]/g, "（")
-        .replace(/[)]/g, "）")
+        .replace(/[\!]/g, "！")
+        .replace(/[\?]/g, "？")
+        .replace(/[\(]/g, "（")
+        .replace(/[\)]/g, "）")
         .replace(/[『]/g, "“")
-        .replace(/[』]/g, "”");
+        .replace(/[』]/g, "”")
+        .replace(/(！+？+)/g,"？！")
+        .replace(/，$/,"……");
     }
 
     provideDocumentFormattingEdits(document:vscode.TextDocument, options:vscode.FormattingOptions, token: vscode.CancellationToken) : vscode.ProviderResult<vscode.TextEdit[]>{
+        if(!this.originText || !this.translateText){
+            log.show("请在设置中添加原文行、译文行起始标志！");
+        }
         let operations = new Array<vscode.TextEdit>();
         log.log("开始格式化");
         for(let lineNumber = 0; lineNumber < document.lineCount; lineNumber++){
@@ -56,7 +66,7 @@ export class Formatter{
     provider: FormattingEditProvider;
     _register: vscode.Disposable | null;
 
-    constructor(oriReg:RegExp, transReg:RegExp){
+    constructor(oriReg:string, transReg:string){
         this.selector = {
             scheme: "file",
             language: "plaintext"
@@ -80,7 +90,7 @@ export class Formatter{
         this._register = null;
     }
 
-    updateReg(origin:RegExp, translate: RegExp){
+    updateReg(origin:string, translate: string){
         this.provider.updateReg(origin,translate);
     }
 }

@@ -34,7 +34,8 @@ class ControlCenter{
 		this.hover = null;
 		this.treeview = new TreeViewManager();
 		this.formatter = new Formatter(this.config.originReg, this.config.translateReg);
-		this.register();
+		this.registerHover();
+		vscode.commands.executeCommand("setContext", "yume:init", this.initialled);
 	}
 
 	init():boolean{
@@ -52,6 +53,7 @@ class ControlCenter{
 			log.error(e);
 		});
 		this.initialled = true;
+		vscode.commands.executeCommand("setContext", "yume:init", this.initialled);
 		return true;
 	}
 
@@ -67,12 +69,7 @@ class ControlCenter{
 		});
 	}
 
-	reload():void{
-		this.config = new Config();
-		this._mydict = new Mydict(this.config.mydictPath);
-	}
-
-	register(){
+	registerHover(){
 		if(this.hover){
 			this.hover.dispose();
 		}
@@ -105,11 +102,21 @@ class ControlCenter{
         });
 	}
 
-	unregister(){
+	unregisterHover(){
 		if(this.hover){
 			this.hover.dispose();
 		}
 		this.hover = null;
+	}
+
+	registerAll(){
+		this.registerHover();
+		this.formatter.register();
+	}
+
+	unregisterAll(){
+		this.unregisterHover();
+		this.formatter.unregister();
 	}
 
 	async translate(){
@@ -141,7 +148,6 @@ class ControlCenter{
 			this.cache[jp] = res;
 			return true;
 		}).catch((e)=>{
-			vscode.window.showErrorMessage("查询失败！");
 			log.error(e);
 			return false;
 		});
@@ -271,11 +277,11 @@ class ControlCenter{
 		if(yume.config.changeConfig(e)){
 			if(yume.config.hover){
 				if(!yume.hover){
-					yume.register();
+					yume.registerHover();
 				}
 			}
 			else{
-				yume.unregister();
+				yume.unregisterHover();
 			}
 			yume.formatter.updateReg(yume.config.originReg, yume.config.translateReg);
 		}
@@ -293,7 +299,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	yume = new ControlCenter();
 	console.log('Yume运行成功！');
-	vscode.commands.executeCommand("setContext", "yume:init", yume.initialled);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -307,7 +312,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("yume.deleteFromMydict",()=>{yume.deleteFromMydict();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.translate",()=>{yume.translate();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.reload",()=>{
+		yume.unregisterAll();
 		yume = new ControlCenter();
+		log.show("Yume重新加载成功！");
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.init",()=>{yume.init();}));
 	// 注册事件
@@ -317,7 +324,4 @@ export function activate(context: vscode.ExtensionContext) {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-	// if(yume.initialled){
-	// 	yume.save();
-	// }
 }

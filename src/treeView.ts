@@ -31,7 +31,7 @@ class ProjectManager implements vscode.TreeDataProvider<vscode.TreeItem>{
     }
 
     getChildren(element?:vscode.TreeItem): Thenable<vscode.TreeItem[]>{
-        return Promise.resolve([]);
+        return Promise.resolve([new Game()]);
     }
 }
 
