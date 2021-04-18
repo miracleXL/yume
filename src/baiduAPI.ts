@@ -25,7 +25,7 @@ export class Baidu implements BaiduFanyi{
         this.api = api;
     }
 
-    search(text:string, to = "zh"):Promise<string>{
+    search(text:string, from = "auto", to = "zh"):Promise<string>{
         return new Promise((resolve, reject)=>{
             if(text === ""){
                 reject();
@@ -41,7 +41,7 @@ export class Baidu implements BaiduFanyi{
             let salt = (new Date()).getTime();
             let data = {
                 q: text,
-                from: 'auto',
+                from: from,
                 to: to,
                 appid: this.api.appId,
                 salt: salt,

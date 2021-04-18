@@ -4,26 +4,69 @@ import * as vscode from "vscode";
 
 export class TreeViewManager{
     project: ProjectManager;
-    provider: vscode.Disposable | null | undefined;
+    // baidu: TreeViewBaidu;
+    provider: vscode.Disposable[];
 
     constructor(){
         this.project = new ProjectManager();
+        // this.baidu = new TreeViewBaidu();
         this.provider = this.register();
     }
 
-    register():vscode.Disposable{
-        return vscode.window.registerTreeDataProvider("yume.project",this.project);
+    register():vscode.Disposable[]{
+        // return [vscode.window.registerTreeDataProvider("yume.treeViewTranslate",this.baidu),vscode.window.registerTreeDataProvider("yume.project",this.project)];
+        return [vscode.window.registerTreeDataProvider("yume.project",this.project)];
     }
 
     unregister(){
-        if(this.provider){
-            this.provider.dispose();
-            this.provider = null;
+        for(let p of this.provider){
+            p.dispose();
         }
+        this.provider = [];
     }
 }
 
+// class TreeViewBaidu implements vscode.TreeDataProvider<number>{
+
+// 	private _onDidChangeTreeData: vscode.EventEmitter<number | null | void> = new vscode.EventEmitter<number | null | void>();
+// 	readonly onDidChangeTreeData: vscode.Event<number | null | void> = this._onDidChangeTreeData.event;
+
+// 	private text: string;
+// 	private editor: vscode.InputBox & vscode.TreeItem;
+// 	private autoRefresh = true;
+
+//     constructor(){
+//         this.text = "";
+//         this.editor = vscode.window.createInputBox();
+//         this.editor.title = "百度机翻";
+//     }
+
+//     refresh(): void {
+// 		this._onDidChangeTreeData.fire();
+// 	}
+
+//     getTreeItem(index:number): vscode.TreeItem{
+//         let treeItem = new vscode.TreeItem("翻译", vscode.TreeItemCollapsibleState.None);
+//         treeItem.command = {
+//             title: "百度机翻",
+//             command: "yume.translate",
+//             arguments: [this.editor.value]
+//         };
+//         return treeItem;
+//     }
+
+//     getChildren(index?:number): Thenable<number[]>{
+//         if(index){
+//             return Promise.resolve([]);
+//         }
+//         return Promise.resolve([3]);
+//     }
+// };
+
 class ProjectManager implements vscode.TreeDataProvider<vscode.TreeItem>{
+	private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | null | void> = new vscode.EventEmitter<vscode.TreeItem | null | void>();
+	readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | null | void> = this._onDidChangeTreeData.event;
+
     constructor(){}
 
     getTreeItem(element:vscode.TreeItem): vscode.TreeItem{
@@ -31,8 +74,29 @@ class ProjectManager implements vscode.TreeDataProvider<vscode.TreeItem>{
     }
 
     getChildren(element?:vscode.TreeItem): Thenable<vscode.TreeItem[]>{
-        return Promise.resolve([new Game()]);
+        if(element){
+            return Promise.resolve([]);
+        }
+        return Promise.resolve([new ScnManager(), new BaiduWebview()]);
     }
+}
+
+class ScnManager implements vscode.TreeItem{
+    label = "剧本管理";
+    collapsibleState = vscode.TreeItemCollapsibleState.None;
+    command = {
+        title:"剧本管理",
+        command: "yume.scenario"
+    };
+}
+
+class BaiduWebview implements vscode.TreeItem{
+    label = "翻译网页";
+    collapsibleState = vscode.TreeItemCollapsibleState.None;
+    command = {
+        title:"翻译",
+        command: "yume.fanyiWebview"
+    };
 }
 
 class Game implements vscode.TreeItem{

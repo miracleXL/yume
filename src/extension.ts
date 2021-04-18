@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import fs = require("fs");
 import path = require("path");
+import request = require('request');
 
 import { Config } from "./config";
 import { Baidu } from "./baiduAPI";
@@ -22,20 +23,24 @@ class ControlCenter{
 	private hover: vscode.Disposable | null;
 	private treeview: TreeViewManager;
 	private formatter: Formatter;
+	private extension: vscode.Extension<any>;
+	public scnView: vscode.WebviewPanel | undefined;
+	public fanyiView: vscode.WebviewPanel | undefined;
 	initialled: boolean;
 
 	constructor(){
 		this.config = new Config();
 		this.baidu = new Baidu(this.config.getBaiduAPI());
 		this._jpdict = new JPdict();
-		this.initialled = this.config.mydictPath ? fs.existsSync(this.config.mydictPath.fsPath) : false; //this.init();
+		this.initialled = (this.config.path && this.config.mydictPath) ? (fs.existsSync(this.config.path.fsPath) || fs.existsSync(this.config.mydictPath.fsPath)) : false; //this.init();
 		this._mydict = new Mydict(this.config.mydictPath);
 		this.cache = {};
 		this.hover = null;
 		this.treeview = new TreeViewManager();
-		this.formatter = new Formatter(this.config.originReg, this.config.translateReg);
+		this.formatter = new Formatter(this.config.config.formatter);
 		this.registerHover();
 		vscode.commands.executeCommand("setContext", "yume:init", this.initialled);
+		this.extension = vscode.extensions.getExtension("miraclexl.yume") as vscode.Extension<any>;
 	}
 
 	init():boolean{
@@ -58,11 +63,11 @@ class ControlCenter{
 	}
 
 	save(){
-		return new Promise<unknown>((resolve, reject)=>{
-			this.config.save().catch((e)=>{
+		return new Promise<unknown>(async (resolve, reject)=>{
+			await this.config.save().catch((e)=>{
 				reject(e);
 			});
-			this._mydict.save().catch((e)=>{
+			await this._mydict.save().catch((e)=>{
 				reject(e);
 			});
 			resolve(true);
@@ -119,8 +124,8 @@ class ControlCenter{
 		this.formatter.unregister();
 	}
 
-	async translate(){
-		let text = this.selectedText() || await this.getInput();
+	async translate(text?: string){
+		text = text || this.selectedText() || await this.getInput();
 		if(text === ""){
 			return;
 		}
@@ -286,6 +291,93 @@ class ControlCenter{
 			yume.formatter.updateReg(yume.config.originReg, yume.config.translateReg);
 		}
 	}
+
+	async scenarioManage(){
+		let uri = vscode.Uri.joinPath(this.extension.extensionUri,"./webview/scenario.html");
+		const columnToShowIn = vscode.window.activeTextEditor? vscode.window.activeTextEditor.viewColumn : vscode.ViewColumn.One;
+		if(this.scnView){
+			this.scnView.reveal(columnToShowIn);
+		}
+		else{
+			this.scnView = vscode.window.createWebviewPanel("yume.scnWebview","剧本管理", vscode.ViewColumn.One, {
+				enableScripts: true,
+				retainContextWhenHidden: true
+			});
+			this.scnView.webview.html = await getWebviewContent(uri);
+			this.scnView.onDidDispose(()=>{
+				this.scnView = undefined;
+			});
+		}
+	}
+
+	fanyiWebview(){
+		let url = "http://fanyi.youdao.com/";
+		const columnToShowIn = vscode.window.activeTextEditor? vscode.window.activeTextEditor.viewColumn : vscode.ViewColumn.Two;
+		if(this.fanyiView){
+			this.fanyiView.reveal(columnToShowIn);
+		}
+		else{
+			this.fanyiView = vscode.window.createWebviewPanel("yume.fanyiWebview","翻译", vscode.ViewColumn.Two,{
+				enableScripts: true,
+				retainContextWhenHidden: true
+			});
+			this.fanyiView.webview.html = getIframeHtml(url);
+			this.fanyiView.onDidDispose(()=>{
+				this.fanyiView = undefined;
+			});
+		}
+	}
+}
+
+function getWebviewContent(uri: vscode.Uri): Thenable<string>{
+	return new Promise((resolve, reject)=>{
+		vscode.workspace.fs.readFile(uri).then((value)=>{
+			resolve(value.toString());
+		},(reason)=>{
+			reject(reason);
+		});
+	});
+}
+
+function getIframeHtml(url: string) {
+    return `<!DOCTYPE html>
+    <html lang="en">
+        <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            html,
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100%;
+                height: 100%;
+            }
+            .iframeDiv {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+		<script>
+			function changePage(url){
+				if(url == "baidu"){
+					document.getElementById("iframe1").src="https://fanyi.baidu.com/";
+				}
+				else if(url == "youdao"){
+					document.getElementById("iframe1").src="http://fanyi.youdao.com/";
+				}
+				else if(url == "google"){
+					document.getElementById("iframe1").src="https://translate.google.cn/";
+				}
+			}
+		</script>
+        </head>
+
+        <body>
+		切换翻译页面（经测试仅有道有效）<button onclick="changePage('baidu')">百度</button><button onclick="changePage('youdao')">有道</button><button onclick="changePage('google')">谷歌</button>
+        <iframe id='iframe1' class="iframeDiv" src="${url}" scrolling="auto"></iframe>
+        </body>
+    </html>`;
 }
 
 let yume:ControlCenter;
@@ -317,8 +409,13 @@ export function activate(context: vscode.ExtensionContext) {
 		log.show("Yume重新加载成功！");
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.init",()=>{yume.init();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.scenario",()=>{yume.scenarioManage();}));
+	context.subscriptions.push(vscode.commands.registerCommand("yume.fanyiWebview",()=>{yume.fanyiWebview();}));
 	// 注册事件
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((e)=>{yume.changeConfig(e);}));
+	// 注册webview
+	if(yume.fanyiView){context.subscriptions.push(yume.fanyiView);}
+	if(yume.scnView){context.subscriptions.push(yume.scnView);}
 	
 }
 

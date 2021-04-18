@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            div{
+                font-size: larger;
+            }
+            button{
+                cursor: pointer;
+                background-color: rgb(75, 75, 75);
+                color: azure;
+                width: 15ch;
+                padding: 10px;
+                margin: 2ch;
+            }
+            input[type="text"]{
+                background-color: rgb(80, 80, 80);
+                margin: 10px;
+            }
+            ul > input[type="text"]{
+                position: absolute;
+                width: 50%;
+                right: 20%;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>剧本管理</h1>
+
+        <h2>文件位置</h2>
+        <form id="path"><button id="save_path" onclick="savePath()">保存设置</button><button id="extract" onclick="extract()">提取剧本</button><button id="inject" onclick="inject()">回注剧本</button><br>
+        <ul>源文件所在文件夹路径：<input type="text" id="source_path"></ul><ul>源文件格式(如*.scn，多种后缀用逗号隔开)：<input type="text" id="source_type"></ul><ul>源文件编码：<input type="text" id="source_encode"></ul>
+        <ul>提取文件目标文件夹路径：<input type="text" id="target_path"></ul><ul>目标文件格式(默认*.txt)：<input type="text" id="target_type"></ul><ul>提取文件编码(默认utf-8)：<input type="text" id="target_encode"></ul></form>
+
+        <h2>文本格式化正则表达式</h2>
+        <div>推荐参考<a href="http://c.gb688.cn/bzgk/gb/showGb?type=online&hcno=22EA6D162E4110E752259661E1A0D0A8">国家标准GB/T 15834-2011标点符号用法</a></div>
+        <p>能力有限，不再提供撤销操作，请谨慎修改！</p>
+        <button id="edit">修改</button><button id="delete">删除</button><button id="clear">清空</button><button>恢复默认设置</button>
+        <div>将<input type="text" id="origin_text">替换为<input type="text" id="format_text"><button id="add" onclick="add()">添加</button></div>
+    </body>
+    <script>document.body.innerHTML="页面设计尚未完成！<br>可尝试手动修改项目路径内.vscode/yume-config.json<br>注意json字符串需要对反斜杠\\进行转义，所以匹配转义字符时需要多写一个\\。如匹配数字，正则表达式为\\d，则在json文件中需要写作\\\\d<br>另外修改完成后需要手动点击重新加载，否则无法生效";</script>
+</html>

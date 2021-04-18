@@ -112,6 +112,14 @@
 			{
 				"command": "yume.translate",
 				"title": "百度翻译"
+			},
+			{
+				"command": "yume.scenario",
+				"title": "剧本管理"
+			},
+			{
+				"command": "yume.fanyiWebview",
+				"title": "打开百度翻译页面"
 			}
 		],
 		"keybindings": [
@@ -183,17 +191,11 @@
 				{
 					"id": "yume.extension",
 					"name": "插件管理",
-					"when": "yume:init",
-					"contextualTitle": "测试"
+					"when": "yume:init"
 				},
 				{
 					"id": "yume.project",
 					"name": "项目设置",
-					"when": "yume:init"
-				},
-				{
-					"id": "yume.scenario",
-					"name": "剧本管理",
 					"when": "yume:init"
 				},
 				{
@@ -215,7 +217,7 @@
 				"when": "yume:init"
 			},
 			{
-				"view": "yume.scenario",
+				"view": "yume.project",
 				"contents": "暂未实现",
 				"when": "yume:init"
 			},

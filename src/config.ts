@@ -8,7 +8,9 @@ import {log} from "./log";
 export class Config{
 
     // 项目设置
-    config: object;
+    config: {
+        formatter: [string,string, {[index:string]:string}]
+    };
 
     // 默认设置
     hjUrl: string;
@@ -63,7 +65,34 @@ export class Config{
         this.hjUrl = 'https://dict.hjenglish.com/jp/jc/';
 
         // 读取项目设置
-        this.config = {};
+        this.config = {
+            formatter: [this.originReg, this.translateReg, {
+                "(……?)|(\\.{2,})|(。{2,})" : "……",
+                "[~〜∼∽⁓]" : "～",
+                "(ー+)|(－{2,})|(-{2,})" : "——",
+                "," : "，",
+                "(?<=D).(?=D)?" : "。",
+                "(?<=D) *= *(?=D)" :" ＝ ",
+                ":" : "：",
+                ";" : "；",
+                "!" : "！",
+                "[\\?]" : "？",
+                "\\(" : "（",
+                "\\)" : "）",
+                "『" : "“",
+                "』" : "”",
+                "(！+？+)" : "？！",
+                "，$":"……"
+            }]
+        };
+        if(this.path){
+            if(fs.existsSync(this.path.fsPath)){
+                this.load();
+            }
+            else{
+                this.save();
+            }
+        }
     }
 
     loadGlobal(){
