@@ -26,7 +26,6 @@ class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
 
     format(text:string):string{
         for(let reg in this.formatter){
-            console.log(reg);
             text = text.replace(new RegExp(reg,"g"),this.formatter[reg]);
         }
         return text;
@@ -50,7 +49,6 @@ class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
                 if(pre){
                     operations.push(vscode.TextEdit.replace(line.range, pre[0] + this.format(text.replace(this.translate,""))));
                 }
-                if(lineNumber > 30) return operations;
             }
         }
         catch(e){
