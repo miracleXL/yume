@@ -6,7 +6,7 @@
 		"name": "miracleXL",
 		"email": "1250036141@qq.com"
 	},
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
