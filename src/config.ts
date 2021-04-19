@@ -85,13 +85,11 @@ export class Config{
                 "，$":"……"
             }]
         };
-        if(this.path){
-            if(fs.existsSync(this.path.fsPath)){
+        if(this.path && fs.existsSync(this.path.fsPath)){
                 this.load();
-            }
-            else{
-                this.save();
-            }
+        }
+        else if(this.mydictPath && fs.existsSync(this.mydictPath.fsPath)){
+            this.save();
         }
     }
 

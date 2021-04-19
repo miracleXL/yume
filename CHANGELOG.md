@@ -28,7 +28,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
     * Git
     * 坚果云
 
-## ver 1.0.3
+## ver 1.0.4
 
 重新调整部分代码结构，将格式化条件移动至设置文件，允许自行修改格式化正则表达式。添加一个有道翻译的webview页面。
 
