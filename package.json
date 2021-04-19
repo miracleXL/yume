@@ -6,7 +6,7 @@
 		"name": "miracleXL",
 		"email": "1250036141@qq.com"
 	},
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -182,7 +182,7 @@
 			]
 		},
 		"views": {
-			"yumeViews":[
+			"yumeViews": [
 				{
 					"id": "yume.initView",
 					"name": "初始化",
