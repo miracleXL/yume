@@ -37,10 +37,14 @@ class ControlCenter{
 		this.cache = {};
 		this.hover = null;
 		this.treeview = new TreeViewManager();
-		this.formatter = new Formatter(this.config.config.formatter);
 		this.registerHover();
 		vscode.commands.executeCommand("setContext", "yume:init", this.initialled);
 		this.extension = vscode.extensions.getExtension("miraclexl.yume") as vscode.Extension<any>;
+		
+		this.formatter = new Formatter(this.config.config.formatter);
+		this.config.load().finally(()=>{
+			this.formatter.updateFormatter(this.config.config.formatter);
+		});
 	}
 
 	init():boolean{
@@ -116,7 +120,6 @@ class ControlCenter{
 
 	registerAll(){
 		this.registerHover();
-		this.formatter.register();
 	}
 
 	unregisterAll(){

@@ -71,8 +71,8 @@ export class Config{
                 "[~〜∼∽⁓]" : "～",
                 "(ー+)|(－{2,})|(-{2,})" : "——",
                 "," : "，",
-                "(?<=D).(?=D)?" : "。",
-                "(?<=D) *= *(?=D)" :" ＝ ",
+                "(?<=\\D)\\.(?=\\D)?" : "。",
+                "(?<=\\D) *= *(?=\\D)" :" ＝ ",
                 ":" : "：",
                 ";" : "；",
                 "!" : "！",
@@ -110,12 +110,13 @@ export class Config{
                 vscode.workspace.fs.readFile(this.path).then((value: Uint8Array)=>{
                     this.config = JSON.parse(value.toString());
                     log.log(`配置加载成功！`);
+                    resolve(this.config);
                 },(e)=>{
                     reject(e);
                 });
             }
             else{
-                log.error("未打开文件夹！");
+                reject("未打开文件夹！");
             }
         });
     }

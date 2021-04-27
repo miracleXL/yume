@@ -24,6 +24,14 @@ class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
         this.translate = new RegExp(translate);
     }
 
+    updateFormatter(formatter:[string,string, {[index:string]:string}]){
+        this.originText = formatter[0];
+        this.origin = new RegExp(this.originText);
+        this.translateText = formatter[1];
+        this.translate = new RegExp(this.translateText);
+        this.formatter = formatter[2];
+    }
+
     format(text:string):string{
         for(let reg in this.formatter){
             text = text.replace(new RegExp(reg,"g"),this.formatter[reg]);
@@ -61,7 +69,7 @@ class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
 
 export class Formatter{
     selector: vscode.DocumentSelector;
-    provider: FormattingEditProvider;
+    provider: FormattingEditProvider | undefined;
     _register: vscode.Disposable | null;
 
     constructor(formatter:[string,string, {[index:string]:string}]){
@@ -73,22 +81,23 @@ export class Formatter{
         this._register = vscode.languages.registerDocumentFormattingEditProvider(this.selector, this.provider);
     }
 
-    register(){
-        if(this._register){
-            return;
-        }else{
-            this._register = vscode.languages.registerDocumentFormattingEditProvider(this.selector, this.provider);
-        }
-    }
-
     unregister(){
         if(this._register){
             this._register.dispose();
+            delete this.provider;
         }
         this._register = null;
     }
 
     updateReg(origin:string, translate: string){
-        this.provider.updateReg(origin,translate);
+        if(this.provider){
+            this.provider.updateReg(origin,translate);
+        }
+    }
+
+    updateFormatter(formatter:[string,string, {[index:string]:string}]){
+        if(this.provider){
+            this.provider.updateFormatter(formatter);
+        }
     }
 }
