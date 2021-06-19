@@ -7,8 +7,8 @@
 			"type": "npm",
 			"script": "watch",
 			"problemMatcher": [
-                "$ts-webpack-watch",
-                "$tslint-webpack-watch"
+				"$ts-webpack-watch",
+				"$tslint-webpack-watch"
 			],
 			"isBackground": true,
 			"presentation": {
@@ -17,7 +17,8 @@
 			"group": {
 				"kind": "build",
 				"isDefault": true
-			}
+			},
+			"label": "watch"
 		},
 		{
 			"type": "npm",
@@ -28,6 +29,14 @@
 				"reveal": "never"
 			},
 			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "start",
+			"path": "webview/",
+			"problemMatcher": [],
+			"label": "npm: start - webview",
+			"detail": "npm run dev"
 		}
 	]
 }

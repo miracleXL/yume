@@ -6,7 +6,10 @@
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "vue/vue3-essential",
+        "@vue/standard",
+        "@vue/typescript/recommended"
     ],
     "rules": {
         "@typescript-eslint/naming-convention": "warn",
@@ -14,6 +17,7 @@
         "curly": "warn",
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
-        "semi": "off"
+        "semi": "off",
+        "vue/require-v-for-key": "off"
     }
 }
