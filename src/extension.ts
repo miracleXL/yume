@@ -296,7 +296,7 @@ class ControlCenter{
 	}
 
 	async scenarioManage(){
-		let uri = vscode.Uri.joinPath(this.extension.extensionUri,"./webview/scenario.html");
+		let uri = vscode.Uri.joinPath(this.extension.extensionUri,"./webview/dist/index.html");
 		const columnToShowIn = vscode.window.activeTextEditor? vscode.window.activeTextEditor.viewColumn : vscode.ViewColumn.One;
 		if(this.scnView){
 			this.scnView.reveal(columnToShowIn);
@@ -304,12 +304,35 @@ class ControlCenter{
 		else{
 			this.scnView = vscode.window.createWebviewPanel("yume.scnWebview","剧本管理", vscode.ViewColumn.One, {
 				enableScripts: true,
-				retainContextWhenHidden: true
+				retainContextWhenHidden: true,
 			});
-			this.scnView.webview.html = await getWebviewContent(uri);
+			let html = await getWebviewContent(uri);
+			html = await getHtml("http://localhost:3000/index.html");
+			// console.log(html)
+			// html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
+			// 	return $1 + vscode.Uri.file(path.resolve("webview", $2)).with({ scheme: 'vscode-resource' }).toString() + '"';
+			// });
+			// console.log(html)
+			let webview = this.scnView.webview;
+			webview.html = html;
 			this.scnView.onDidDispose(()=>{
 				this.scnView = undefined;
 			});
+			webview.onDidReceiveMessage(message=>{
+				switch(message.command){
+					case "alert":
+						log.show(message.text);
+						break;
+					case "sendFormatter":
+						webview.postMessage({
+							command: "formatters",
+							data: this.config.config.formatter[2]
+						});
+						break;
+					default :
+						log.error(message);
+				}
+			})
 		}
 	}
 
@@ -339,6 +362,21 @@ function getWebviewContent(uri: vscode.Uri): Thenable<string>{
 		},(reason)=>{
 			reject(reason);
 		});
+	});
+}
+
+function getHtml(url:string):Thenable<string>{
+	return new Promise((resolve, reject)=>{
+		request(url,{},(err,res,body)=>{
+			console.log(url)
+			console.log(res);
+			if(err){
+				reject(err);
+				return;
+			}
+			resolve(body);
+			return;
+		})
 	});
 }
 
@@ -377,7 +415,6 @@ function getIframeHtml(url: string) {
         </head>
 
         <body>
-		切换翻译页面（经测试仅有道有效）<button onclick="changePage('baidu')">百度</button><button onclick="changePage('youdao')">有道</button><button onclick="changePage('google')">谷歌</button>
         <iframe id='iframe1' class="iframeDiv" src="${url}" scrolling="auto"></iframe>
         </body>
     </html>`;
