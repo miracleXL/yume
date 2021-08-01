@@ -1,6 +1,7 @@
 <template>
 <div id="regex">
-  <p>水平有限不提供撤销，请谨慎操作</p>
+  <p>格式化时从上到下依次将左侧正则表达式匹配到的内容替换为右侧字符串，使用方法为：在待格式化文本中右键格式化文档</p>
+  <p>水平有限不提供撤销，请谨慎操作。理论上只可替换为确定的字符串</p>
   <div>
     <button @click="clickRegButton(index)" class="reg_button" v-for="(button, index) in reg_buttons" :key="index"> {{ button }} </button>
     <button @click="selected = [-1]" class="reg_button">取消选择</button>
@@ -39,15 +40,7 @@ export default defineComponent({
   },
   mounted() {
     window.addEventListener("message",event=>{
-      let msg = event.data;
-      switch(msg.command){
-        case "showFormatters":
-          [this.formatter, this.formatterId] = IPC.transFormatter(msg.data, 0);
-          break;
-        default:
-          console.error("FormatterRegex：未知消息！");
-          console.log(event);
-      }
+      this.eventListener(event);
     });
   },
   data: () => {
@@ -117,14 +110,14 @@ export default defineComponent({
       if(this.selected[0] === -1){
         return;
       }
-      if(!confirm("该操作无法撤销，确认删除？")){
-        return;
-      }
-      for(let selected of this.selected){
-        if(this.formatter[selected]){
-          delete(this.formatter[selected]);
-        }
-      }
+      this.$emit("confirm", ()=>{
+        for(let selected of this.selected){
+          if(this.formatter[selected]){
+            delete(this.formatter[selected]);
+          }
+        };
+        IPC.updateFormatter(this.formatter);
+      })
     },
     clearRegInput(){
       this.regex_input_key = "";
@@ -142,6 +135,17 @@ export default defineComponent({
       this.$emit("confirm", ()=>{
         IPC.getDefaultFormatter();
       });
+    },
+    eventListener(event: MessageEvent){
+      let msg = event.data;
+      switch(msg.command){
+        case "showFormatters":
+          [this.formatter, this.formatterId] = IPC.transFormatter(msg.data, 0);
+          break;
+        default:
+          console.error("FormatterRegex：未知消息！");
+          console.log(event);
+      }
     },
   }
 });
@@ -176,6 +180,7 @@ export default defineComponent({
 .selectbox select{
   width: 35vw;
   height: 50vh;
+  background-color: darkgray;
 }
 
 .selectbox option{

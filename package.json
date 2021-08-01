@@ -116,10 +116,6 @@
 			{
 				"command": "yume.scenario",
 				"title": "剧本管理"
-			},
-			{
-				"command": "yume.fanyiWebview",
-				"title": "打开百度翻译页面"
 			}
 		],
 		"keybindings": [
@@ -146,7 +142,7 @@
 					"group": "gta@1"
 				},
 				{
-					"when": "editorLangId == plaintext && editorHasSelection",
+					"when": "editorLangId == plaintext",
 					"command": "yume.searchMydict",
 					"group": "gta@3"
 				},
@@ -258,8 +254,5 @@
 		"vscode-test": "^1.4.0",
 		"webpack": "^4.44.1",
 		"webpack-cli": "^3.3.12"
-	},
-	"dependencies": {
-		"vue": "^3.0.5"
 	}
 }

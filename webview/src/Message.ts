@@ -1,13 +1,13 @@
-export const vscode = acquireVsCodeApi();
-// export const vscode = {
-//     postMessage: (msg:{
-//         command : string;
-//         text?: string;
-//         data?: any;
-//     })=>{
-//       console.log(`vscode message: ${msg.command}`);
-//     }
-// };
+// export const vscode = acquireVsCodeApi();
+export const vscode = (typeof(acquireVsCodeApi) === "function") ? acquireVsCodeApi() : {
+    postMessage: (msg:{
+        command : string;
+        text?: string;
+        data?: any;
+    })=>{
+      console.log(`vscode message: ${msg.command}`);
+    }
+};
 
 export const IPC = {
   alert(text: string){
@@ -25,7 +25,7 @@ export const IPC = {
 
   getFormatter(){
       vscode.postMessage({
-        command: 'showFormatter'
+        command: 'showFormatters'
       });
   },
 

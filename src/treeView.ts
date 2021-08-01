@@ -26,43 +26,6 @@ export class TreeViewManager{
     }
 }
 
-// class TreeViewBaidu implements vscode.TreeDataProvider<number>{
-
-// 	private _onDidChangeTreeData: vscode.EventEmitter<number | null | void> = new vscode.EventEmitter<number | null | void>();
-// 	readonly onDidChangeTreeData: vscode.Event<number | null | void> = this._onDidChangeTreeData.event;
-
-// 	private text: string;
-// 	private editor: vscode.InputBox & vscode.TreeItem;
-// 	private autoRefresh = true;
-
-//     constructor(){
-//         this.text = "";
-//         this.editor = vscode.window.createInputBox();
-//         this.editor.title = "百度机翻";
-//     }
-
-//     refresh(): void {
-// 		this._onDidChangeTreeData.fire();
-// 	}
-
-//     getTreeItem(index:number): vscode.TreeItem{
-//         let treeItem = new vscode.TreeItem("翻译", vscode.TreeItemCollapsibleState.None);
-//         treeItem.command = {
-//             title: "百度机翻",
-//             command: "yume.translate",
-//             arguments: [this.editor.value]
-//         };
-//         return treeItem;
-//     }
-
-//     getChildren(index?:number): Thenable<number[]>{
-//         if(index){
-//             return Promise.resolve([]);
-//         }
-//         return Promise.resolve([3]);
-//     }
-// };
-
 class ProjectManager implements vscode.TreeDataProvider<vscode.TreeItem>{
 	private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | null | void> = new vscode.EventEmitter<vscode.TreeItem | null | void>();
 	readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | null | void> = this._onDidChangeTreeData.event;
@@ -77,7 +40,7 @@ class ProjectManager implements vscode.TreeDataProvider<vscode.TreeItem>{
         if(element){
             return Promise.resolve([]);
         }
-        return Promise.resolve([new ScnManager(), new BaiduWebview()]);
+        return Promise.resolve([new ScnManager()]);
     }
 }
 
@@ -87,15 +50,6 @@ class ScnManager implements vscode.TreeItem{
     command = {
         title:"剧本管理",
         command: "yume.scenario"
-    };
-}
-
-class BaiduWebview implements vscode.TreeItem{
-    label = "翻译网页";
-    collapsibleState = vscode.TreeItemCollapsibleState.None;
-    command = {
-        title:"翻译",
-        command: "yume.fanyiWebview"
     };
 }
 

@@ -9,7 +9,9 @@ export class Config{
 
     // 项目设置
     config: {
-        formatter: [string,string, {[index:string]:string}]
+        [index:string]: any,
+        formatter: [string,string, {[index:string]:string}],
+        filepos: object
     };
 
     // 默认设置
@@ -64,6 +66,8 @@ export class Config{
         };
         this.hjUrl = 'https://dict.hjenglish.com/jp/jc/';
 
+
+
         // 读取项目设置
         this.config = {
             formatter: [this.originReg, this.translateReg, {
@@ -83,7 +87,15 @@ export class Config{
                 "』": "”",
                 "(！+？+)": "？！",
                 "，$": "——"
-            }]
+            }],
+            filepos: {
+                0: "",
+                1: "",
+                2: "",
+                3: "",
+                4: "txt",
+                5: "utf-8",
+            }
         };
         if(this.path && fs.existsSync(this.path.fsPath)){
                 this.load();
@@ -108,8 +120,20 @@ export class Config{
         return new Promise((resolve, reject)=>{
             if(this.path){
                 vscode.workspace.fs.readFile(this.path).then((value: Uint8Array)=>{
-                    this.config = JSON.parse(value.toString());
+                    let config = JSON.parse(value.toString());
+                    let needUpdate = false;
+                    for(let c in this.config){
+                        if(config[c]){
+                            this.config[c] = config[c];
+                        }
+                        else{
+                            needUpdate = true;
+                        }
+                    }
                     log.log(`配置加载成功！`);
+                    if(needUpdate){
+                        this.save();
+                    }
                     resolve(this.config);
                 },(e)=>{
                     reject(e);
@@ -154,6 +178,43 @@ export class Config{
     getBaiduAPI(){
         this.setBaiduAPI();
         return this.baiduAPI;
+    }
+
+    resetFormatter(){
+        this.config.formatter[2] = {
+            "(……?)|(\\.{2,})|(。{2,})": "……",
+            "[~〜∼∽⁓]": "～",
+            "(ーー?)|(－－?)|(--+)": "——",
+            ",": "，",
+            "(?<=\\D)\\.(?=\\D)?": "。",
+            "(?<=\\D) *= *(?=\\D)": " ＝ ",
+            ":": "：",
+            ";": "；",
+            "!": "！",
+            "[\\?]": "？",
+            "\\(": "（",
+            "\\)": "）",
+            "『": "“",
+            "』": "”",
+            "(！+？+)": "？！",
+            "，$": "——"
+        };
+        this.save();
+    }
+
+    clearFormatter(){
+        this.config.formatter[2] = {};
+        this.save();
+    }
+
+    updateFormatter(formatter:{[id:string]:string}){
+        this.config.formatter[2] = formatter;
+        this.save();
+    }
+
+    updateFilepos(fp:object){
+        this.config.filepos = fp;
+        this.save();
     }
 
     changeConfig(e:vscode.ConfigurationChangeEvent):boolean{

@@ -34,7 +34,7 @@ class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
 
     format(text:string):string{
         for(let reg in this.formatter){
-            text = text.replace(new RegExp(reg,"g"),this.formatter[reg]);
+            text = text.replace(new RegExp(reg,"g"), this.formatter[reg]);
         }
         return text;
     }

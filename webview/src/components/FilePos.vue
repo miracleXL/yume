@@ -20,28 +20,11 @@ export default defineComponent({
     // 向插件发送获取设置项的消息
     IPC.getFilepos();
   },
-  emits: ['message'],
+  emits: ['confirm'],
   mounted() {
-    window.addEventListener("message", (event) => {
-      let msg = event.data;
-      if(!msg) return;
-      switch (msg.command) {
-        case "showFilepos":
-          this.update(msg.data);
-          break;
-        default:
-          console.log("Filepos：未知消息！");
-          console.log(event);
-      }
+    window.addEventListener("message", event=> {
+      this.eventListener(event);
     });
-    this.update([
-      { id: 0, value: "测试" },
-      { id: 1, value: "" },
-      { id: 2, value: "" },
-      { id: 3, value: "" },
-      { id: 4, value: "" },
-      { id: 5, value: "u8" },
-    ]);
   },
   data() {
     // 按键
@@ -104,10 +87,19 @@ export default defineComponent({
     injectScn() {
       underDev();
     },
-    update(data: { id: number; value: string }[]) {
+    eventListener(event: MessageEvent){
+      let msg = event.data;
+      if(!msg) return;
+      switch (msg.command) {
+        case "showFilepos":
+          this.update(msg.data);
+          break;
+      }
+    },
+    update(data: {[id:number]:string}) {
       try{
-        for (let t of data) {
-          this.fp_inputs[t.id].value = t.value;
+        for (let t in data) {
+          this.fp_inputs[t].value = data[t];
         }
       }
       catch(e){
@@ -127,12 +119,12 @@ function underDev(){
 p {
   margin: 0;
   display: inline-block;
-  width: 30vw;
+  width: 35vw;
   text-align: right;
 }
 
 .fp_inputbox {
-  width: 50vw;
+  width: 55vw;
 }
 
 .fp_button {
