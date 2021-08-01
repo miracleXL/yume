@@ -324,7 +324,7 @@ export class ControlCenter{
         this.config.clearFormatter();
     }
 
-    updateFilepos(fp:object){
+    updateFilepos(fp:{[index:number]:string}){
         this.config.updateFilepos(fp);
     }
 

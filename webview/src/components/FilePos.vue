@@ -31,16 +31,19 @@ export default defineComponent({
     const fp_buttons: string[] = [
       "修改设置",
       "保存设置",
-      "提取剧本",
-      "回注剧本",
+      // "提取剧本",
+      // "回注剧本",
     ];
     const fp_inputs: { id: number; key: string; value: string }[] = [
-      { id: 0, key: "源文件所在文件夹路径", value: "" },
+      { id: 0, key: "源文件所在文件夹绝对路径", value: "" },
       { id: 1, key: "源文件名后缀(如*.scn，中间用逗号隔开)", value: "" },
       { id: 2, key: "源文件编码", value: "" },
-      { id: 3, key: "提取文件目标文件夹路径", value: "" },
+      { id: 3, key: "提取文件目标文件夹绝对路径", value: "" },
       { id: 4, key: "目标文件后缀(默认*.txt)", value: "txt" },
       { id: 5, key: "提取文件编码(默认utf-8)", value: "utf-8" },
+      { id: 6, key: "源文件待提取文本行特征(正则表达式)", value: ""},
+      { id: 7, key: "提取文件原文行起始标记", value: ""},
+      { id: 8, key: "提取文件译文行起始标记", value: ""}
     ];
     return {
       fp_buttons: fp_buttons,
@@ -120,7 +123,6 @@ p {
   margin: 0;
   display: inline-block;
   width: 35vw;
-  text-align: right;
 }
 
 .fp_inputbox {

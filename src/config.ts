@@ -11,7 +11,7 @@ export class Config{
     config: {
         [index:string]: any,
         formatter: [string,string, {[index:string]:string}],
-        filepos: object
+        filepos: {[index:number]:string}
     };
 
     // 默认设置
@@ -95,6 +95,9 @@ export class Config{
                 3: "",
                 4: "txt",
                 5: "utf-8",
+                6: "",
+                7: "&",
+                8: "@"
             }
         };
         if(this.path && fs.existsSync(this.path.fsPath)){
@@ -212,8 +215,16 @@ export class Config{
         this.save();
     }
 
-    updateFilepos(fp:object){
+    updateFilepos(fp:{[index:number]:string}){
         this.config.filepos = fp;
+        let originStart = "^\\d+" + this.config.filepos[7];
+        if(this.originReg !== originStart){
+            this.extensionConf.update("原文行起始标志", originStart, false);
+        }
+        let transStart = "^\\d+" + this.config.filepos[8];
+        if(this.translateReg !== transStart){
+            this.extensionConf.update("译文行起始标志", transStart, false);
+        }
         this.save();
     }
 
