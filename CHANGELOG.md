@@ -9,9 +9,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## 不确定需求
 
 1. 项目配置
-    * 为每个项目启用不同的设置项
+    * ~~为每个项目启用不同的设置项~~
     * 当前项目需要设置项（配置文件保存在项目隐藏目录中）
-        * 剧本提取正则表达式
+        * ~~剧本提取正则表达式~~
         * 角色设定
 2. 当前项目总览
     * 进度统计
@@ -27,6 +27,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 5. 一键上传工具
     * Git
     * 坚果云
+
+## 1.0.7
+
+完成第一个webview，可较为方便地修改格式化文档时所用正则表达式。并添加了暂时用不到的文件保存位置
 
 ## ver 1.0.4
 

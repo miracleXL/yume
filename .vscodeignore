@@ -14,5 +14,6 @@ vsc-extension-quickstart.md
 **/node_modules/**
 build/**
 *.vsix
-webview/^(dist/)
 webview/*.*
+webview/src/**
+webview/.vscode/**
