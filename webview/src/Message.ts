@@ -72,5 +72,53 @@ export const IPC = {
       command: "saveFilepos",
       data: fp
     })
-  }
+  },
+
+  getDiagnorstics(){
+    vscode.postMessage({
+      command: 'showDiagnorstics'
+    });
+  },
+
+  transDiagnorstics(diags:{
+    brackets: [string,string][],
+    regex: string[]
+  }):[{ brackets: {[id:number]:[string,string]}, regex: {[id:number]:string} }, number, number]{
+    let new_diags:{ brackets: {[id:number]:[string,string]}, regex: {[id:number]:string} } = {
+      brackets: {},
+      regex: {}
+    };
+    let idL = 0, idR = 0;
+    for(let bracket in diags.brackets){
+      idL++;
+      new_diags.brackets[bracket] = diags.brackets[bracket];
+    }
+    for(let reg in diags.regex){
+      idR++;
+      new_diags.regex[reg] = diags.regex[reg];
+    }
+    return [new_diags, idL, idR];
+  },
+
+  updateDiagnorstics(diags: { brackets: {[id:number]:[string,string]}, regex: {[id:number]:string} } ){
+    let data = this.retransDiagnorstics(diags);
+    vscode.postMessage({
+      command: "updateDiagnorstics",
+      data: data
+    })
+  },
+
+  retransDiagnorstics(diags:{ brackets: {[id:number]:[string,string]}, regex: {[id:number]:string}})
+  {
+    let new_diags:{brackets: [string,string][], regex: string[]} = {brackets:[], regex:[]};
+    for(let bracket in diags.brackets){
+      new_diags.brackets.push([diags.brackets[bracket][0], diags.brackets[bracket][1]]);
+    }
+    for(let reg in diags.regex){
+      new_diags.regex[reg] = diags.regex[reg];
+    }
+    // console.log(new_diags)
+    return new_diags;
+  },
+
 }

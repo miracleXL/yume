@@ -17,14 +17,14 @@ import { IPC } from "../Message";
 export default defineComponent({
   name: "filepos",
   setup: () => {
-    // 向插件发送获取设置项的消息
-    IPC.getFilepos();
   },
   emits: ['confirm'],
   mounted() {
     window.addEventListener("message", event=> {
       this.eventListener(event);
     });
+    // 向插件发送获取设置项的消息
+    IPC.getFilepos();
   },
   data() {
     // 按键

@@ -1,11 +1,11 @@
 <template>
 <div id="regex">
+  <div id="reg_button">
+    <button @click="clickRegButton(index)" v-for="(button, index) in reg_buttons" :key="index"> {{ button }} </button>
+    <button @click="selected = [-1]">取消选择</button>
+  </div>
   <p>格式化时从上到下依次将左侧正则表达式匹配到的内容替换为右侧字符串，使用方法为：在待格式化文本中右键格式化文档</p>
   <p>水平有限不提供撤销，请谨慎操作。理论上只可替换为确定的字符串</p>
-  <div>
-    <button @click="clickRegButton(index)" class="reg_button" v-for="(button, index) in reg_buttons" :key="index"> {{ button }} </button>
-    <button @click="selected = [-1]" class="reg_button">取消选择</button>
-  </div>
   <div>
     <div class="reg_input"><input :disabled="disable_reg_edit" v-model="regex_input_key" placeholder="待替换内容正则表达式">→<input :disabled="disable_reg_edit" v-model="regex_input_value" placeholder="替换后结果"></div>
     <div class="selectbox">
@@ -34,14 +34,14 @@ export default defineComponent({
   setup: () => {
     const formatterId: Ref<number> = ref(0);
     const formatter: Ref<{[id:number]:{key:string,value:string}}> = ref({});
-    // 向插件发送获取设置项的消息
-    IPC.getFormatter();
     return {formatterId, formatter};
   },
   mounted() {
     window.addEventListener("message",event=>{
       this.eventListener(event);
     });
+    // 向插件发送获取设置项的消息
+    IPC.getFormatter();
   },
   data: () => {
     // 按键
@@ -157,10 +157,6 @@ export default defineComponent({
   text-align: center;
 }
 
-.reg_button{
-  margin-top: 0;
-}
-
 .reg_input{
   width: 80vw;
   height: 2em;
@@ -197,8 +193,13 @@ button{
   cursor: pointer;
   background-color: rgb(75, 75, 75);
   color: azure;
-  width: 15ch;
+  width: 13ch;
   padding: 10px;
   margin: 2ch;
+}
+
+p{
+  margin-top: 0;
+  margin-bottom: 0.5em;
 }
 </style>

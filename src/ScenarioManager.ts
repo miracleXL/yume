@@ -28,7 +28,7 @@ export class ScenarioManager{
             let webview = this.panel.webview;
             webview.html = html;
 			webview.onDidReceiveMessage(message=>{
-				log.log(message.command);
+				log.log(`webview传达指令：${message.command}`);
 				switch(message.command){
 					case "alert":
 						log.show(message.text);
@@ -61,6 +61,15 @@ export class ScenarioManager{
 						break;
 					case "saveFilepos":
                         yume.updateFilepos(message.data);
+						break;
+					case "showDiagnorstics":
+						webview.postMessage({
+							command: "showDiagnorstics",
+							data: yume.getDiagnostics()
+						});
+						break;
+					case "updateDiagnorstics":
+						yume.updateDiagnorstics(message.data);
 						break;
 					default :
 						log.error(message);

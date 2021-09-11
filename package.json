@@ -115,7 +115,7 @@
 			},
 			{
 				"command": "yume.scenario",
-				"title": "剧本管理"
+				"title": "简易设置"
 			}
 		],
 		"keybindings": [

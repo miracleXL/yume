@@ -8,41 +8,45 @@ import { JPdict, Mydict } from "./dictionary";
 import { TreeViewManager } from "./treeView";
 import { Formatter } from "./formatter";
 import { ScenarioManager } from "./ScenarioManager";
+import { LanguageManager } from "./language"
 import { yume } from "./extension"
 import { log } from "./log"
 
 export class ControlCenter{
 
+	public extension: vscode.Extension<any>;
+	public context: vscode.ExtensionContext;
+	public initialled: boolean;
 	public config: Config;
-	private _jpdict:JPdict;
-	private _mydict:Mydict;
-	private baidu:BaiduFanyi;
-	private cache:{[index:string]:JPdata};
+	private _jpdict: JPdict;
+	private _mydict: Mydict;
+	private baidu: BaiduFanyi;
+	private cache: {[index:string]:JPdata};
 	private hover: vscode.Disposable | null;
 	private treeview: TreeViewManager;
 	private formatter: Formatter;
-	private extension: vscode.Extension<any>;
+	private languageMagager: LanguageManager;
 	public scnManager: ScenarioManager;
-	initialled: boolean;
 
-	constructor(){
+	constructor(context: vscode.ExtensionContext){
+		this.context = context;
+		this.extension = vscode.extensions.getExtension("miraclexl.yume") as vscode.Extension<any>;
 		this.config = new Config();
+		this.initialled = (this.config.path && this.config.mydictPath) ? (fs.existsSync(this.config.path.fsPath) || fs.existsSync(this.config.mydictPath.fsPath)) : false; //this.init();
+		vscode.commands.executeCommand("setContext", "yume:init", this.initialled);
+
 		this.baidu = new Baidu(this.config.getBaiduAPI());
 		this._jpdict = new JPdict();
-		this.initialled = (this.config.path && this.config.mydictPath) ? (fs.existsSync(this.config.path.fsPath) || fs.existsSync(this.config.mydictPath.fsPath)) : false; //this.init();
 		this._mydict = new Mydict(this.config.mydictPath);
 		this.cache = {};
 		this.hover = null;
-		this.treeview = new TreeViewManager();
 		this.registerHover();
-		vscode.commands.executeCommand("setContext", "yume:init", this.initialled);
-		this.extension = vscode.extensions.getExtension("miraclexl.yume") as vscode.Extension<any>;
-		
+		this.treeview = new TreeViewManager();
 		this.formatter = new Formatter(this.config.config.formatter);
-		this.config.load().finally(()=>{
-			this.formatter.updateFormatter(this.config.config.formatter);
-		});
 		this.scnManager = new ScenarioManager(this.extension.extensionUri);
+		this.languageMagager = new LanguageManager(this.initialled ? this.config.getFilepos()[4] : "txt", this.initialled ? context : undefined);
+
+		this.reloadConfig();
 	}
 
 	init():boolean{
@@ -61,6 +65,7 @@ export class ControlCenter{
 		});
 		this.initialled = true;
 		vscode.commands.executeCommand("setContext", "yume:init", this.initialled);
+		this.languageMagager.activate();
 		return true;
 	}
 
@@ -76,6 +81,13 @@ export class ControlCenter{
 		});
 	}
 
+	reloadConfig(){
+		if(this.initialled){
+			this.config.load().finally(()=>{
+				this.formatter.updateFormatter(this.config.config.formatter);
+			});
+		}
+	}
 
 
 
@@ -342,6 +354,18 @@ export class ControlCenter{
 		}
 	}
 
+	getLanguageConfig(): vscode.LanguageConfiguration {
+		return this.config.getLanguageConfig();
+	}
+
+	getDiagnostics(){
+		return this.config.getDiagnostics();
+	}
+
+	updateDiagnorstics(data:{brackets: [string,string][], regex: string[]}){
+		this.config.updateDiagnorstics(data);
+		this.languageMagager.updateRegex();
+	}
 
 
     scenarioManage(){

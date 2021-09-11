@@ -2,6 +2,7 @@
   <div id="tab">
     <button @click="currentTab = 'filepos'">文件位置</button>
     <button @confirm="waitingConfirm = true" @click="currentTab = 'fmtreg'">文本格式化</button>
+    <button @confirm="waitingConfirm = true" @click="currentTab = 'diagnostics'">语法检查</button>
   </div>
   <keep-alive>
     <component :is="currentTab" @confirm="startWaitingConfirm"></component>
@@ -14,6 +15,7 @@ import { defineComponent, ref } from 'vue'
 import { IPC } from './Message'
 import filepos from './components/FilePos.vue'
 import fmtreg from './components/FormatterRegex.vue'
+import diagnostics from './components/Diagnostics.vue'
 import Confirm from './components/Confirm.vue'
 import Alert from './components/Alert.vue'
 
@@ -22,6 +24,7 @@ export default defineComponent({
   components: {
     filepos,
     fmtreg,
+    diagnostics,
     Confirm,
     Alert
   },
@@ -85,9 +88,16 @@ footer p{
   margin: 0;
 }
 
+#tab button{
+  background-color: rgb(235, 235, 235);
+  color: black;
+}
+
 button{
   padding: 1em;
   margin: 1em;
-  margin-bottom: 0;
+  cursor: pointer;
+  background-color: rgb(75, 75, 75);
+  color: azure;
 }
 </style>

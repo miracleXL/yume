@@ -68,14 +68,15 @@ class FormattingEditProvider implements vscode.DocumentFormattingEditProvider{
 }
 
 export class Formatter{
-    selector: vscode.DocumentSelector;
+    selector?: vscode.DocumentSelector;
     provider: FormattingEditProvider | undefined;
-    _register: vscode.Disposable | null;
+    _register?: vscode.Disposable | null;
 
-    constructor(formatter:[string,string, {[index:string]:string}]){
+    constructor(formatter?: [string,string, {[index:string]:string}]){
+        if(!formatter) return;
         this.selector = {
             scheme: "file",
-            language: "plaintext"
+            language: "scenariotext"
         };
         this.provider = new FormattingEditProvider(formatter);
         this._register = vscode.languages.registerDocumentFormattingEditProvider(this.selector, this.provider);

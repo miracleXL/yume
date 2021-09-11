@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 
-	yume = new ControlCenter();
+	yume = new ControlCenter(context);
 	console.log('Yume运行成功！');
 
 	// The command has been defined in the package.json file
@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("yume.translate",()=>{yume.translate();}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.reload",()=>{
 		yume.unregisterAll();
-		yume = new ControlCenter();
+		yume = new ControlCenter(context);
 		log.show("Yume重新加载成功！");
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand("yume.init",()=>{yume.init();}));

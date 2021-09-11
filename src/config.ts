@@ -3,6 +3,7 @@
 "use strict";
 import fs = require("fs");
 import vscode = require("vscode");
+import { yume } from "./extension";
 import {log} from "./log";
 
 export class Config{
@@ -11,7 +12,11 @@ export class Config{
     config: {
         [index:string]: any,
         formatter: [string,string, {[index:string]:string}],
-        filepos: {[index:number]:string}
+        filepos: {[index:number]:string},
+        diagnostics: {
+            brackets: [string,string][],
+            regex: string[]
+        },
     };
 
     // 默认设置
@@ -98,6 +103,16 @@ export class Config{
                 6: "",
                 7: "&",
                 8: "@"
+            },
+            diagnostics: {
+                brackets: [
+                    ["（", "）"],
+                    ["【", "】"],
+                    ["“", "”"],
+                    ["‘", "’"],
+                    ["《", "》"]
+                ],
+                regex: []
             }
         };
         if(this.path && fs.existsSync(this.path.fsPath)){
@@ -133,9 +148,11 @@ export class Config{
                             needUpdate = true;
                         }
                     }
+                    this.updateLineStart();
                     log.log(`配置加载成功！`);
                     if(needUpdate){
                         this.save();
+                        log.log("配置更新成功！");
                     }
                     resolve(this.config);
                 },(e)=>{
@@ -146,6 +163,15 @@ export class Config{
                 reject("未打开文件夹！");
             }
         });
+    }
+
+    changeConfig(e:vscode.ConfigurationChangeEvent):boolean{
+        // log.log(e);
+        if(e.affectsConfiguration("yume")){
+            this.loadGlobal();
+            return true;
+        }
+        return false;
     }
 
     save(){
@@ -217,6 +243,15 @@ export class Config{
 
     updateFilepos(fp:{[index:number]:string}){
         this.config.filepos = fp;
+        this.updateLineStart();
+        this.save();
+    }
+
+    getFilepos(){
+        return this.config.filepos;
+    }
+
+    updateLineStart(){
         let originStart = "^\\d+" + this.config.filepos[7];
         if(this.originReg !== originStart){
             this.extensionConf.update("原文行起始标志", originStart, false);
@@ -225,15 +260,20 @@ export class Config{
         if(this.translateReg !== transStart){
             this.extensionConf.update("译文行起始标志", transStart, false);
         }
-        this.save();
     }
 
-    changeConfig(e:vscode.ConfigurationChangeEvent):boolean{
-        // log.log(e);
-        if(e.affectsConfiguration("yume")){
-            this.loadGlobal();
-            return true;
-        }
-        return false;
+    getLanguageConfig(): vscode.LanguageConfiguration{
+        return this.config.languageConfig;
+    }
+
+    getDiagnostics(){
+        return this.config.diagnostics;
+    }
+
+    updateDiagnorstics(diags:{
+        brackets: [string,string][],
+        regex: string[]
+    }){
+        this.config.diagnostics = diags;
     }
 }
