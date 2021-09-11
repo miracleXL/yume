@@ -4,7 +4,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 预定更新
 
-* 角色设定速览，游戏信息速览(没想好怎么实现，先咕了)
+全鸽了，不更了
+
+* ~~角色设定速览，游戏信息速览(没想好怎么实现，先咕了)~~
 
 ## 不确定需求
 
@@ -27,6 +29,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 5. 一键上传工具
     * Git
     * 坚果云
+
+## 1.0.8
+
+也许是最后一次更新。
+添加了语法检查，并在侧边栏里添加了修改语法检查规则的webview
 
 ## 1.0.7
 
