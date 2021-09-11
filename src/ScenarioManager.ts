@@ -13,7 +13,7 @@ export class ScenarioManager{
 
     initPanel(){
         if(!this.panel){
-            this.panel = vscode.window.createWebviewPanel("yume.scnWebview","剧本管理", vscode.ViewColumn.One, {
+            this.panel = vscode.window.createWebviewPanel("yume.scnWebview","简单设置", vscode.ViewColumn.One, {
                 enableScripts: true,
                 retainContextWhenHidden: true,
                 // localResourceRoots: [vscode.Uri.joinPath(yume.config.rootPath as vscode.Uri, "webview/dist")]

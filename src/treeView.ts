@@ -45,10 +45,10 @@ class ProjectManager implements vscode.TreeDataProvider<vscode.TreeItem>{
 }
 
 class ScnManager implements vscode.TreeItem{
-    label = "剧本管理";
+    label = "简单设置";
     collapsibleState = vscode.TreeItemCollapsibleState.None;
     command = {
-        title:"剧本管理",
+        title:"简单设置",
         command: "yume.scenario"
     };
 }
