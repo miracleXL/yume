@@ -34,7 +34,6 @@ export class ControlCenter{
 		this.config = new Config();
 		this.initialled = (this.config.path && this.config.mydictPath) ? (fs.existsSync(this.config.path.fsPath) || fs.existsSync(this.config.mydictPath.fsPath)) : false; //this.init();
 		vscode.commands.executeCommand("setContext", "yume:init", this.initialled);
-
 		this.baidu = new Baidu(this.config.getBaiduAPI());
 		this._jpdict = new JPdict();
 		this._mydict = new Mydict(this.config.mydictPath);
@@ -65,7 +64,7 @@ export class ControlCenter{
 		});
 		this.initialled = true;
 		vscode.commands.executeCommand("setContext", "yume:init", this.initialled);
-		this.languageMagager.activate();
+		this.languageMagager.activate(this.context);
 		return true;
 	}
 

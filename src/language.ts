@@ -15,7 +15,8 @@ export class LanguageManager{
 
     activate(context?: vscode.ExtensionContext){
         if(!context){
-            context = yume.context;
+            log.error("未激活语法检查功能！")
+            return;
         }
         context.subscriptions.push(
             vscode.window.onDidChangeActiveTextEditor((e: vscode.TextEditor|undefined)=>{
