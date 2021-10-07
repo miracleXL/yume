@@ -25,7 +25,9 @@
 	"activationEvents": [
 		"onView:yume.initView",
 		"workspaceContains:.vscode/mydict.json",
-		"workspaceContains:.vscode/yume-config.json"
+		"workspaceContains:.vscode/yume-config.json",
+		"onCommand:yume.jpdict",
+		"onCommand:yume.translate"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -137,32 +139,32 @@
 			],
 			"editor/context": [
 				{
-					"when": "editorLangId == plaintext && editorHasSelection",
+					"when": "editorLangId == scenariotext && editorHasSelection",
 					"command": "yume.jpdict",
 					"group": "gta@1"
 				},
 				{
-					"when": "editorLangId == plaintext",
+					"when": "editorLangId == scenariotext",
 					"command": "yume.searchMydict",
 					"group": "gta@3"
 				},
 				{
-					"when": "editorLangId == plaintext && editorHasSelection",
+					"when": "editorLangId == scenariotext && editorHasSelection",
 					"command": "yume.addToMydict",
 					"group": "gta@2"
 				},
 				{
-					"when": "editorLangId == plaintext",
+					"when": "editorLangId == scenariotext",
 					"command": "yume.deleteFromMydict",
 					"group": "gta@2"
 				},
 				{
-					"when": "editorLangId == plaintext",
+					"when": "editorLangId == scenariotext",
 					"command": "yume.editMydict",
 					"group": "gta@2"
 				},
 				{
-					"when": "editorLangId == plaintext && editorHasSelection",
+					"when": "editorLangId == scenariotext && editorHasSelection",
 					"command": "yume.translate",
 					"group": "gta@0"
 				}
@@ -221,6 +223,18 @@
 				"view": "yume.sync",
 				"contents": "暂未实现",
 				"when": "yume:init"
+			}
+		],
+		"languages": [
+			{
+				"id": "scenariotext",
+				"aliases": [
+					"翻译文本"
+				],
+				"extensions": [
+					".txt"
+				],
+				"configuration": "./language-configuration.json"
 			}
 		]
 	},

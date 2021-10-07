@@ -15,7 +15,7 @@ export class LanguageManager{
 
     activate(context?: vscode.ExtensionContext){
         if(!context){
-            log.error("未激活语法检查功能！")
+            log.log("未激活语法检查功能！")
             return;
         }
         context.subscriptions.push(
