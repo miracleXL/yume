@@ -1,6 +1,7 @@
 # Galgame翻译助手（暂停更新）
 
-学业繁忙，暂时弃坑，有缘再见
+学业繁忙，暂时弃坑，有缘再见  
+推荐使用仍在积极维护同类型的插件 [DLTXT：双行文本翻译解决方案](https://github.com/jsc6924/translation-assistant)，并且其功能完善程度已经超过了本插件
 
 原名Galgame Translator Assistant ~~(GTA)~~，后来和朋友讨论后改为 Yume (Your Unsophisticated Multifunctional Enlightenment)
 ~~(发布的时候中二病犯了，临时编的)~~
